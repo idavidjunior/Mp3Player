@@ -1,0 +1,98 @@
+[
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/song_item_cover_small.xml",
+        "source": "com.mp3player.app-main-51:/layout/song_item_cover_small.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_settings.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_settings.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/activity_tag_editor.xml",
+        "source": "com.mp3player.app-main-51:/layout/activity_tag_editor.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/song_item_grid.xml",
+        "source": "com.mp3player.app-main-51:/layout/song_item_grid.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/item_folder.xml",
+        "source": "com.mp3player.app-main-51:/layout/item_folder.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/song_item_compact.xml",
+        "source": "com.mp3player.app-main-51:/layout/song_item_compact.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_equalizer.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_equalizer.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/item_album.xml",
+        "source": "com.mp3player.app-main-51:/layout/item_album.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_queue.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_queue.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_album_detail.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_album_detail.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_albums.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_albums.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/player_widget.xml",
+        "source": "com.mp3player.app-main-51:/layout/player_widget.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/item_artist.xml",
+        "source": "com.mp3player.app-main-51:/layout/item_artist.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_folders.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_folders.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/bottom_sheet_queue.xml",
+        "source": "com.mp3player.app-main-51:/layout/bottom_sheet_queue.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_artists.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_artists.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_now_playing.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_now_playing.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_artist_detail.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_artist_detail.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/song_item_text_only.xml",
+        "source": "com.mp3player.app-main-51:/layout/song_item_text_only.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/song_item.xml",
+        "source": "com.mp3player.app-main-51:/layout/song_item.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/song_item_list_large.xml",
+        "source": "com.mp3player.app-main-51:/layout/song_item_list_large.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/activity_main.xml",
+        "source": "com.mp3player.app-main-51:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/song_item_card.xml",
+        "source": "com.mp3player.app-main-51:/layout/song_item_card.xml"
+    },
+    {
+        "merged": "com.mp3player.app-mergeDebugResources-48:/layout/fragment_songs.xml",
+        "source": "com.mp3player.app-main-51:/layout/fragment_songs.xml"
+    }
+]

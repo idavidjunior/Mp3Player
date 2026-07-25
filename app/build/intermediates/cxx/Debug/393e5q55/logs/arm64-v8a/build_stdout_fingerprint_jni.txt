@@ -1,0 +1,2 @@
+ninja: Entering directory `C:\Users\Playtec-bancada\Desktop\Codigos\Android\Mp3Player\app\.cxx\Debug\393e5q55\arm64-v8a'
+ninja: no work to do.

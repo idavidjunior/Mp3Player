@@ -1,0 +1,218 @@
+[
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_albums.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_albums.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_album_detail.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_album_detail.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_artists.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_artists.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_shuffle.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_shuffle.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_repeat.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_repeat.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_seekbar_thumb.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/seekbar_thumb.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_song_item_cover_small.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/song_item_cover_small.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_skip_next.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_skip_next.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.mp3player.app-main-51:/menu/bottom_nav_menu.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_song_item.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/song_item.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_circle_play_bg.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/circle_play_bg.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_artist_detail.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_artist_detail.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_search_bg.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/search_bg.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_activity_main.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_songs.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_songs.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_play_button_bg.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/play_button_bg.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_seekbar_h_thumb.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/seekbar_h_thumb.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_queue.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_queue.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_skip_previous.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_skip_previous.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_bg_preset_btn.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/bg_preset_btn.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_seekbar_progress.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/seekbar_progress.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_folders.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_folders.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_now_playing.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_now_playing.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/menu_main_menu.xml.flat",
+        "source": "com.mp3player.app-main-51:/menu/main_menu.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_item_folder.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/item_folder.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_activity_tag_editor.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/activity_tag_editor.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_song_item_text_only.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/song_item_text_only.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_favorite_border.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_favorite_border.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_favorite.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_favorite.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_repeat_one.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_repeat_one.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_equalizer.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_equalizer.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_song_item_list_large.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/song_item_list_large.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_song_item_compact.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/song_item_compact.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_card_bg.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/card_bg.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_seekbar_eq_track.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/seekbar_eq_track.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout-land_fragment_now_playing.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout-land/fragment_now_playing.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_item_artist.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/item_artist.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.mp3player.app-main-51:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_play_arrow.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_play_arrow.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_player_widget.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/player_widget.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_seekbar_h_track.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/seekbar_h_track.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_btn_filter_inactive.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/btn_filter_inactive.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_fragment_settings.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/fragment_settings.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_item_album.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/item_album.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_song_item_grid.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/song_item_grid.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_seekbar_eq_thumb.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/seekbar_eq_thumb.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_ic_pause.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/ic_pause.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_btn_filter_active.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/btn_filter_active.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_bottom_sheet_queue.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/bottom_sheet_queue.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/drawable_bg_preset_active.xml.flat",
+        "source": "com.mp3player.app-main-51:/drawable/bg_preset_active.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/layout_song_item_card.xml.flat",
+        "source": "com.mp3player.app-main-51:/layout/song_item_card.xml"
+    },
+    {
+        "merged": "com.mp3player.app-merged_res-49:/xml_player_widget_info.xml.flat",
+        "source": "com.mp3player.app-main-51:/xml/player_widget_info.xml"
+    }
+]
