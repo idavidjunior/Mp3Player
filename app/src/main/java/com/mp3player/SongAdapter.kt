@@ -20,7 +20,8 @@ import kotlinx.coroutines.withContext
 
 enum class ViewMode {
     DETAILED, COMPACT, CARD,
-    LIST_LARGE, GRID, TEXT_ONLY, COVER_SMALL
+    LIST_LARGE, GRID, TEXT_ONLY, COVER_SMALL,
+    EXPANDED, MINIMAL
 }
 
 enum class SortMode { TITLE, ARTIST, ALBUM, DURATION, DATE_ADDED, PLAY_COUNT }
@@ -38,6 +39,8 @@ class SongAdapter(
         private const val VT_GRID = 4
         private const val VT_TEXT_ONLY = 5
         private const val VT_COVER_SMALL = 6
+        private const val VT_EXPANDED = 7
+        private const val VT_MINIMAL = 8
 
         fun formatDuration(millis: Long): String {
             val totalSeconds = millis / 1000
@@ -106,6 +109,8 @@ class SongAdapter(
             ViewMode.GRID -> VT_GRID
             ViewMode.TEXT_ONLY -> VT_TEXT_ONLY
             ViewMode.COVER_SMALL -> VT_COVER_SMALL
+            ViewMode.EXPANDED -> VT_EXPANDED
+            ViewMode.MINIMAL -> VT_MINIMAL
             else -> VT_DETAILED
         }
     }
@@ -119,6 +124,8 @@ class SongAdapter(
             VT_GRID -> GridViewHolder(inflater.inflate(R.layout.song_item_grid, parent, false))
             VT_TEXT_ONLY -> TextOnlyViewHolder(inflater.inflate(R.layout.song_item_text_only, parent, false))
             VT_COVER_SMALL -> CoverSmallViewHolder(inflater.inflate(R.layout.song_item_cover_small, parent, false))
+            VT_EXPANDED -> ExpandedViewHolder(inflater.inflate(R.layout.song_item_expanded, parent, false))
+            VT_MINIMAL -> MinimalViewHolder(inflater.inflate(R.layout.song_item_minimal, parent, false))
             else -> DetailedViewHolder(inflater.inflate(R.layout.song_item, parent, false))
         }
     }
@@ -133,6 +140,8 @@ class SongAdapter(
             is GridViewHolder -> bindGrid(holder, song, position)
             is TextOnlyViewHolder -> bindTextOnly(holder, song, position)
             is CoverSmallViewHolder -> bindCoverSmall(holder, song, position)
+            is ExpandedViewHolder -> bindExpanded(holder, song, position)
+            is MinimalViewHolder -> bindMinimal(holder, song, position)
         }
     }
 
@@ -150,6 +159,26 @@ class SongAdapter(
             val bmp = withContext(Dispatchers.IO) { AlbumArtProvider.getAlbumArt(path, context) }
             if (bmp != null) imageView.setImageBitmap(bmp)
         }
+    }
+
+    private fun bindExpanded(holder: ExpandedViewHolder, song: Song, position: Int) {
+        holder.title.text = song.title
+        holder.artist.text = song.artist
+        holder.album.text = song.album
+        holder.duration.text = formatDuration(song.duration)
+        holder.albumArt.setImageResource(android.R.color.transparent)
+        holder.itemView.alpha = if (multiSelectMode && song !in selectedSongs) 0.5f else 1.0f
+        loadAlbumArtAsync(holder.albumArt, song.path, holder.itemView.context)
+        bindCommon(holder, song, position)
+        setItemBackground(holder, song)
+    }
+
+    private fun bindMinimal(holder: MinimalViewHolder, song: Song, position: Int) {
+        holder.title.text = song.title
+        holder.artist.text = song.artist
+        holder.itemView.alpha = if (multiSelectMode && song !in selectedSongs) 0.5f else 1.0f
+        bindCommon(holder, song, position)
+        setItemBackground(holder, song)
     }
 
     private fun bindDetailed(holder: DetailedViewHolder, song: Song, position: Int) {
@@ -318,5 +347,19 @@ class SongAdapter(
         val title: TextView = view.findViewById(R.id.tv_cover_small_title)
         val artist: TextView = view.findViewById(R.id.tv_cover_small_artist)
         val duration: TextView = view.findViewById(R.id.tv_cover_small_duration)
+    }
+
+    class ExpandedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val albumArt: ImageView = view.findViewById(R.id.iv_expanded_art)
+        val title: TextView = view.findViewById(R.id.tv_expanded_title)
+        val artist: TextView = view.findViewById(R.id.tv_expanded_artist)
+        val album: TextView = view.findViewById(R.id.tv_expanded_album)
+        val year: TextView = view.findViewById(R.id.tv_expanded_year)
+        val duration: TextView = view.findViewById(R.id.tv_expanded_duration)
+    }
+
+    class MinimalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val title: TextView = view.findViewById(R.id.tv_minimal_title)
+        val artist: TextView = view.findViewById(R.id.tv_minimal_artist)
     }
 }

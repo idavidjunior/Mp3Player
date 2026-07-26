@@ -165,9 +165,9 @@ class SongsFragment : Fragment() {
         btnViewMode.setOnClickListener {
             val modes = ViewMode.entries.toList()
             val cur = modes.indexOf(currentView)
-            val labels = arrayOf("Lista detalhada", "Lista compacta", "Card", "Lista grande", "Grade", "Só texto", "Mini capa")
+            val labels = arrayOf("Lista detalhada", "Lista compacta", "Card", "Lista grande", "Grade", "Só texto", "Mini capa", "Expandido", "Minimal")
             android.app.AlertDialog.Builder(requireContext())
-                .setTitle("Modo de visualização ($cur)")
+                .setTitle("Modo de visualização")
                 .setSingleChoiceItems(labels, cur) { _, which ->
                     currentView = modes[which]
                     prefs?.edit()?.putString("view_mode", currentView.name)?.apply()
@@ -179,6 +179,8 @@ class SongsFragment : Fragment() {
                         ViewMode.GRID -> "Grade"
                         ViewMode.TEXT_ONLY -> "Texto"
                         ViewMode.COVER_SMALL -> "Mini"
+                        ViewMode.EXPANDED -> "Exp."
+                        ViewMode.MINIMAL -> "Min."
                     }
                     adapter.viewMode = currentView
                     if (currentView == ViewMode.GRID) {
@@ -228,6 +230,8 @@ class SongsFragment : Fragment() {
             ViewMode.GRID -> "Grade"
             ViewMode.TEXT_ONLY -> "Texto"
             ViewMode.COVER_SMALL -> "Mini"
+            ViewMode.EXPANDED -> "Exp."
+            ViewMode.MINIMAL -> "Min."
         }
         if (currentView == ViewMode.GRID) {
             recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
