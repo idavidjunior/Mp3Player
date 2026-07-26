@@ -391,8 +391,7 @@ class MainActivity : AppCompatActivity() {
 
             playCountManager.incrementPlayCount(song.path)
 
-            playerPanel.visibility = View.VISIBLE
-            playerPanelDivider.visibility = View.VISIBLE
+            syncViewVisibility()
 
             mp.setPlaylist(songsList)
             tvSongTitle.text = song.title
