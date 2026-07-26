@@ -97,6 +97,7 @@ class MainActivity : AppCompatActivity() {
     private var currentIndex = -1
     private var isSeeking = false
     private var pendingPermission = false
+    private var nowPlayingPending = false
     private var searchQuery = ""
     private val seekBarUpdater = object : Runnable {
         override fun run() { updateSeekBar() }
@@ -189,9 +190,7 @@ class MainActivity : AppCompatActivity() {
             syncViewVisibility()
         }
 
-        if (savedInstanceState == null) {
-            checkAndRequestPermissions()
-        }
+        checkAndRequestPermissions()
     }
 
     override fun onStart() {
@@ -639,22 +638,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openNowPlaying() {
+        if (nowPlayingPending) return
         if (supportFragmentManager.backStackEntryCount > 0 &&
             supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name == "now_playing") {
             return
         }
+        nowPlayingPending = true
         try {
             val frag = com.mp3player.ui.NowPlayingFragment()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, frag)
                 .addToBackStack("now_playing")
                 .commit()
+            supportFragmentManager.executePendingTransactions()
             playerPanel.visibility = View.GONE
             playerPanelDivider.visibility = View.GONE
             etSearch.visibility = View.GONE
         } catch (e: Exception) {
             e.printStackTrace()
             android.util.Log.e(TAG, "openNowPlaying crashed", e)
+        } finally {
+            nowPlayingPending = false
         }
     }
 
