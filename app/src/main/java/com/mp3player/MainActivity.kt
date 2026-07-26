@@ -39,6 +39,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.mp3player.data.EqStateLoader
@@ -358,9 +359,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun switchFragment(f: Fragment) {
+        supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, f)
             .commitNow()
+        syncViewVisibility()
     }
 
     fun playSongFromList(songsList: List<Song>, index: Int) {
