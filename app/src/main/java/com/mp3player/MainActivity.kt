@@ -3,6 +3,7 @@ package com.mp3player
 import android.Manifest
 import android.app.AlertDialog
 import android.content.ComponentName
+import android.content.res.ColorStateList
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -43,6 +44,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.mp3player.data.EqStateLoader
+import com.mp3player.util.resolveThemeColor
 import com.mp3player.data.PlayCountManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -355,6 +357,16 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+        // Neon blue for selected item, theme-aware gray for unselected
+        val neonBlue = 0xFF00BFFF.toInt()
+        val defaultColor = resolveThemeColor(R.attr.themeTextTertiary)
+        val states = arrayOf(
+            intArrayOf(android.R.attr.state_checked),
+            intArrayOf()
+        )
+        val colors = intArrayOf(neonBlue, defaultColor)
+        bottomNav.itemIconTintList = ColorStateList(states, colors)
+        bottomNav.itemTextColor = ColorStateList(states, colors)
         bottomNav.selectedItemId = R.id.nav_songs
     }
 

@@ -31,6 +31,7 @@
     <color name="primaryDark">#168F3E</color>
     <color name="onPrimary">#FFFFFF</color>
     <color name="favorite">#FF4444</color>
+    <color name="neonBlue">#00BFFF</color>
 
     <!-- Drawable-specific (reused regardless of theme) -->
     <color name="searchBg">#333333</color>
