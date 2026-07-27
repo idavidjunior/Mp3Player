@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import com.mp3player.util.resolveThemeColor
 import kotlin.random.Random
 
 class VisualizerView @JvmOverloads constructor(
@@ -26,8 +27,11 @@ class VisualizerView @JvmOverloads constructor(
     }
 
     private val inactivePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#333333")
         style = Paint.Style.FILL
+    }
+
+    init {
+        inactivePaint.color = context.resolveThemeColor(R.attr.themeSurface2)
     }
 
     init {

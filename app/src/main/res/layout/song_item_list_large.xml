@@ -14,7 +14,7 @@
         android:layout_height="60dp"
         android:layout_marginStart="4dp"
         android:scaleType="centerCrop"
-        android:background="#2A2A2A"
+        android:background="?attr/themeSurface2"
         android:contentDescription="Album art" />
 
     <LinearLayout
@@ -28,7 +28,7 @@
             android:id="@+id/tv_list_large_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/themeTextPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             android:ellipsize="end"
@@ -38,7 +38,7 @@
             android:id="@+id/tv_list_large_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#AAAAAA"
+            android:textColor="?attr/themeTextSecondary"
             android:textSize="14sp"
             android:ellipsize="end"
             android:maxLines="1" />
@@ -47,7 +47,7 @@
             android:id="@+id/tv_list_large_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#888888"
+            android:textColor="?attr/themeTextTertiary"
             android:textSize="12sp"
             android:ellipsize="end"
             android:maxLines="1" />
@@ -64,7 +64,7 @@
             android:id="@+id/tv_list_large_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#888888"
+            android:textColor="?attr/themeTextTertiary"
             android:textSize="12sp" />
 
         <ImageView

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1A1A1A"
+    android:background="?attr/themeSurface"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -12,14 +12,14 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="10dp"
-        android:background="#1E1E1E">
+        android:background="?attr/themeSurface">
 
         <TextView
             android:id="@+id/btn_close_eq"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:text="X"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/themeTextPrimary"
             android:textSize="16sp"
             android:gravity="center"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Equalizador"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/themeTextPrimary"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginStart="4dp" />
@@ -56,7 +56,7 @@
             android:layout_height="26dp"
             android:text="CARREGAR"
             android:background="@drawable/bg_preset_btn"
-            android:textColor="#B0B0B0"
+            android:textColor="?attr/themeTextSecondary"
             android:textSize="7sp"
             android:paddingHorizontal="6dp"
             android:layout_marginEnd="2dp"
@@ -82,7 +82,7 @@
             android:layout_height="26dp"
             android:text="REINICIAR"
             android:background="@drawable/bg_preset_btn"
-            android:textColor="#B0B0B0"
+            android:textColor="?attr/themeTextSecondary"
             android:textSize="7sp"
             android:paddingHorizontal="6dp"
             android:minWidth="0dp"
@@ -92,7 +92,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#3D3D3D" />
+        android:background="?attr/themeDivider" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -116,7 +116,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#3D3D3D"
+            android:background="?attr/themeDivider"
             android:layout_gravity="bottom" />
     </FrameLayout>
 
@@ -125,7 +125,7 @@
         android:layout_height="48dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#1E1E1E">
+        android:background="?attr/themeSurface">
 
         <TextView
             android:id="@+id/btn_prev_preset"
@@ -155,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Predefini\u00e7\u00f5es"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/themeTextPrimary"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:singleLine="true"
@@ -165,7 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="toque para lista"
-                android:textColor="#B0B0B0"
+                android:textColor="?attr/themeTextSecondary"
                 android:textSize="7sp" />
         </LinearLayout>
 
@@ -184,7 +184,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="32dp"
-            android:background="#3D3D3D" />
+            android:background="?attr/themeDivider" />
 
         <LinearLayout
             android:id="@+id/knob_volume_area"
@@ -211,7 +211,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:text="Volume"
-                android:textColor="#B0B0B0"
+                android:textColor="?attr/themeTextSecondary"
                 android:textSize="7sp" />
         </LinearLayout>
     </LinearLayout>

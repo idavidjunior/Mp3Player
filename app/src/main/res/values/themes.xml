@@ -2,27 +2,73 @@
 <resources>
     <style name="Theme.Mp3Player" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/background</item>
+        <item name="colorPrimaryDark">@color/dark_background</item>
         <item name="colorAccent">@color/primary</item>
-        <item name="android:statusBarColor">@color/background</item>
-        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_background</item>
+        <item name="themeBackground">@color/dark_background</item>
+        <item name="themeSurface">@color/dark_surface</item>
+        <item name="themeSurface2">@color/dark_surface2</item>
+        <item name="themeCard">@color/dark_card</item>
+        <item name="themeTextPrimary">@color/dark_textPrimary</item>
+        <item name="themeTextSecondary">@color/dark_textSecondary</item>
+        <item name="themeTextTertiary">@color/dark_textTertiary</item>
+        <item name="themeHint">@color/dark_hint</item>
+        <item name="themeDivider">@color/dark_divider</item>
+        <item name="themeNavBg">@color/dark_navBackground</item>
+        <item name="themeSearchBg">@color/searchBg</item>
+        <item name="themePlayerBg">@color/dark_surface2</item>
     </style>
 
-    <style name="Theme.Mp3Player.Editor" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Mp3Player.Editor" parent="Theme.Mp3Player">
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/background</item>
+        <item name="colorPrimaryDark">@color/dark_background</item>
         <item name="colorAccent">@color/primary</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorOnSurface">#FFFFFF</item>
-        <item name="android:statusBarColor">@color/background</item>
-        <item name="android:navigationBarColor">@color/background</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorOnSurface">@color/dark_textPrimary</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_background</item>
+    </style>
+
+    <style name="Theme_App_Dark" parent="Theme.Mp3Player">
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/dark_background</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:navigationBarColor">@color/dark_background</item>
+        <item name="themeBackground">@color/dark_background</item>
+        <item name="themeSurface">@color/dark_surface</item>
+        <item name="themeSurface2">@color/dark_surface2</item>
+        <item name="themeCard">@color/dark_card</item>
+        <item name="themeTextPrimary">@color/dark_textPrimary</item>
+        <item name="themeTextSecondary">@color/dark_textSecondary</item>
+        <item name="themeTextTertiary">@color/dark_textTertiary</item>
+        <item name="themeHint">@color/dark_hint</item>
+        <item name="themeDivider">@color/dark_divider</item>
+        <item name="themeNavBg">@color/dark_navBackground</item>
+        <item name="themeSearchBg">@color/searchBg</item>
+        <item name="themePlayerBg">@color/dark_surface</item>
     </style>
 
     <style name="Theme_App_Light" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@color/background_light</item>
+        <item name="android:windowBackground">@color/light_background</item>
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/primary</item>
         <item name="android:statusBarColor">@color/primary</item>
-        <item name="android:navigationBarColor">@color/background_light</item>
+        <item name="android:navigationBarColor">@color/light_background</item>
+        <item name="themeBackground">@color/light_background</item>
+        <item name="themeSurface">@color/light_surface</item>
+        <item name="themeSurface2">@color/light_surface2</item>
+        <item name="themeCard">@color/light_card</item>
+        <item name="themeTextPrimary">@color/light_textPrimary</item>
+        <item name="themeTextSecondary">@color/light_textSecondary</item>
+        <item name="themeTextTertiary">@color/light_textTertiary</item>
+        <item name="themeHint">@color/light_hint</item>
+        <item name="themeDivider">@color/light_divider</item>
+        <item name="themeNavBg">@color/light_navBackground</item>
+        <item name="themeSearchBg">@color/searchBg_light</item>
+        <item name="themePlayerBg">@color/light_surface</item>
     </style>
 </resources>

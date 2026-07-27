@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#121212">
+    android:background="?attr/themeBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center_vertical"
         android:paddingHorizontal="12dp"
-        android:background="#1E1E1E">
+        android:background="?attr/themeSurface">
 
         <ImageButton
             android:id="@+id/btn_back_artist"
@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/themeTextPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:maxLines="1"
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="#AAAAAA"
+                android:textColor="?attr/themeTextSecondary"
                 android:textSize="12sp"
                 android:maxLines="1"
                 android:ellipsize="end" />

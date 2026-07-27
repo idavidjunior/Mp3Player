@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E1E1E"
+    android:background="?attr/themeSurface"
     android:padding="12dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Fila de Reprodu\u00e7\u00e3o"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/themeTextPrimary"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nenhuma musica na fila"
-        android:textColor="#888888"
+        android:textColor="?attr/themeTextTertiary"
         android:textSize="14sp"
         android:visibility="gone" />
 
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="#3D3D3D"
+        android:divider="?attr/themeDivider"
         android:dividerHeight="1dp" />
 
     <Button
@@ -38,7 +38,7 @@
         android:layout_height="40dp"
         android:text="LIMPAR FILA"
         android:background="@drawable/bg_preset_btn"
-        android:textColor="#FF4444"
+        android:textColor="@color/favorite"
         android:textSize="12sp"
         android:layout_marginTop="8dp" />
 

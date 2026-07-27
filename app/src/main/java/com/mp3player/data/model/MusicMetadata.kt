@@ -8,7 +8,8 @@ data class MusicMetadata(
     val genre: String? = null,
     val trackNumber: String? = null,
     val albumArtBytes: ByteArray? = null,
-    val albumArtMime: String? = null
+    val albumArtMime: String? = null,
+    val albumArtOptions: List<AlbumArtOption>? = null
 ) {
     val isComplete: Boolean get() = title != null && artist != null && album != null
 
@@ -30,5 +31,21 @@ data class MusicMetadata(
         result = 31 * result + artist.hashCode()
         result = 31 * result + album.hashCode()
         return result
+    }
+}
+
+data class AlbumArtOption(
+    val bytes: ByteArray,
+    val mime: String,
+    val source: String
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AlbumArtOption) return false
+        return bytes.contentEquals(other.bytes) && mime == other.mime && source == other.source
+    }
+
+    override fun hashCode(): Int {
+        return bytes.contentHashCode()
     }
 }

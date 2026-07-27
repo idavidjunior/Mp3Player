@@ -1,6 +1,9 @@
 package com.mp3player
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.widget.GridLayout
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.widget.Button
@@ -14,12 +17,12 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.mp3player.data.AlbumArtProvider
 import com.mp3player.data.StorageHelper
+import com.mp3player.data.model.AlbumArtOption
 import com.mp3player.data.model.MusicMetadata
 import com.mp3player.data.online.MetadataSearchService
 import com.mp3player.data.online.SearchMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withContext
 import com.mp3player.data.tagging.FallbackTagProcessor
 import java.io.File
@@ -274,6 +277,7 @@ class TagEditorActivity : AppCompatActivity() {
             if (merged.genre != null) append("Genero: ${merged.genre}\n")
             if (merged.trackNumber != null) append("Faixa: ${merged.trackNumber}\n")
         }
+        val artOptions = rawResult.albumArtOptions
         val builder = AlertDialog.Builder(this)
             .setTitle("Metadados encontrados")
             .setMessage("Aplicar as informacoes abaixo?\n\n$msg")
@@ -298,13 +302,62 @@ class TagEditorActivity : AppCompatActivity() {
                 Toast.makeText(this, "Metadados aplicados! Clique em SALVAR para persistir.", Toast.LENGTH_LONG).show()
             }
             .setNegativeButton("Descartar", null)
-        // Only show "Tentar Novamente" on NORMAL mode searches
-        if (mode == SearchMode.NORMAL) {
+
+        if (artOptions != null && artOptions.size > 1) {
+            builder.setNeutralButton("Ver Capas (${artOptions.size})") { _, _ ->
+                showArtGallery(artOptions)
+            }
+        } else if (mode == SearchMode.NORMAL) {
             builder.setNeutralButton("Tentar Novamente") { _, _ ->
                 searchOnline(SearchMode.RELAXED)
             }
         }
         builder.show()
+    }
+
+    private fun showArtGallery(options: List<AlbumArtOption>) {
+        val cols = 3
+        val grid = GridLayout(this).apply {
+            columnCount = cols
+        }
+
+        val density = resources.displayMetrics.density
+        val imgSize = (100 * density).toInt()
+
+        for (art in options) {
+            val bmp = BitmapFactory.decodeByteArray(art.bytes, 0, art.bytes.size)
+            if (bmp == null) continue
+
+            val iv = ImageView(this).apply {
+                layoutParams = GridLayout.LayoutParams(
+                    GridLayout.spec(GridLayout.UNDEFINED, 1f),
+                    GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                ).apply {
+                    width = imgSize
+                    height = imgSize
+                    setMargins(6, 6, 6, 6)
+                }
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setImageBitmap(bmp)
+                setOnClickListener { v ->
+                    embeddedArtBytes = art.bytes
+                    embeddedArtMime = art.mime
+                    ivAlbumArt.setImageBitmap(bmp)
+                    Toast.makeText(this@TagEditorActivity, "Capa selecionada: ${art.source}", Toast.LENGTH_SHORT).show()
+                    (v.parent as? GridLayout)?.let { g ->
+                        (g.tag as? android.app.Dialog)?.dismiss()
+                    }
+                }
+            }
+            grid.addView(iv)
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Escolha a Capa do Album")
+            .setView(grid)
+            .setPositiveButton("Cancelar", null)
+            .show()
+        grid.tag = dialog
     }
 
     private fun saveMetadata() {

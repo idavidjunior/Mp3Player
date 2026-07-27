@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/themeTextPrimary"
         android:textSize="13sp"
         android:ellipsize="end"
         android:maxLines="1" />
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:textColor="#AAAAAA"
+        android:textColor="?attr/themeTextSecondary"
         android:textSize="11sp"
         android:ellipsize="end"
         android:maxLines="1" />

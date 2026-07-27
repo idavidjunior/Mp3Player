@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:gravity="center"
-    android:background="#1A1A1A"
+    android:background="?attr/themeSurface"
     android:padding="4dp">
 
     <ImageButton

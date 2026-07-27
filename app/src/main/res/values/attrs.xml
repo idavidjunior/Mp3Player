@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="themeBackground" format="color" />
+    <attr name="themeSurface" format="color" />
+    <attr name="themeSurface2" format="color" />
+    <attr name="themeCard" format="color" />
+    <attr name="themeTextPrimary" format="color" />
+    <attr name="themeTextSecondary" format="color" />
+    <attr name="themeTextTertiary" format="color" />
+    <attr name="themeHint" format="color" />
+    <attr name="themeDivider" format="color" />
+    <attr name="themeNavBg" format="color" />
+    <attr name="themeSearchBg" format="color" />
+    <attr name="themePlayerBg" format="color" />
+</resources>

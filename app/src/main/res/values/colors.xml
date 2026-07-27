@@ -1,15 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#121212</color>
-    <color name="background_light">#FFFFFF</color>
-    <color name="surface">#1E1E1E</color>
-    <color name="surface_light">#F5F5F5</color>
+    <!-- Dark theme -->
+    <color name="dark_background">#121212</color>
+    <color name="dark_surface">#1E1E1E</color>
+    <color name="dark_surface2">#2A2A2A</color>
+    <color name="dark_card">#1A1A1A</color>
+    <color name="dark_textPrimary">#FFFFFF</color>
+    <color name="dark_textSecondary">#AAAAAA</color>
+    <color name="dark_textTertiary">#666666</color>
+    <color name="dark_textHint">#555555</color>
+    <color name="dark_hint">#888888</color>
+    <color name="dark_divider">#333333</color>
+    <color name="dark_navBackground">#1E1E1E</color>
+
+    <!-- Light theme -->
+    <color name="light_background">#F5F5F5</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_surface2">#EEEEEE</color>
+    <color name="light_card">#FFFFFF</color>
+    <color name="light_textPrimary">#212121</color>
+    <color name="light_textSecondary">#666666</color>
+    <color name="light_textTertiary">#999999</color>
+    <color name="light_textHint">#888888</color>
+    <color name="light_hint">#AAAAAA</color>
+    <color name="light_divider">#DDDDDD</color>
+    <color name="light_navBackground">#FFFFFF</color>
+
+    <!-- Shared accents -->
     <color name="primary">#1DB954</color>
+    <color name="primaryDark">#168F3E</color>
     <color name="onPrimary">#FFFFFF</color>
-    <color name="textPrimary">#FFFFFF</color>
-    <color name="textPrimary_light">#212121</color>
-    <color name="textSecondary">#AAAAAA</color>
-    <color name="textSecondary_light">#666666</color>
-    <color name="divider">#333333</color>
     <color name="favorite">#FF4444</color>
+
+    <!-- Drawable-specific (reused regardless of theme) -->
+    <color name="searchBg">#333333</color>
+    <color name="searchBg_light">#E0E0E0</color>
 </resources>

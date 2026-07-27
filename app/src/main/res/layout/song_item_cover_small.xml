@@ -14,7 +14,7 @@
         android:layout_height="36dp"
         android:layout_marginStart="4dp"
         android:scaleType="centerCrop"
-        android:background="#2A2A2A"
+        android:background="?attr/themeSurface2"
         android:contentDescription="Album art" />
 
     <LinearLayout
@@ -28,7 +28,7 @@
             android:id="@+id/tv_cover_small_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/themeTextPrimary"
             android:textSize="13sp"
             android:ellipsize="end"
             android:maxLines="1" />
@@ -37,7 +37,7 @@
             android:id="@+id/tv_cover_small_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#AAAAAA"
+            android:textColor="?attr/themeTextSecondary"
             android:textSize="11sp"
             android:ellipsize="end"
             android:maxLines="1" />
@@ -47,7 +47,7 @@
         android:id="@+id/tv_cover_small_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#888888"
+        android:textColor="?attr/themeTextTertiary"
         android:textSize="11sp"
         android:layout_marginEnd="4dp" />
 

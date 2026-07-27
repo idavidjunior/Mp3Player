@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:background="#2A2A2A"
+            android:background="?attr/themeSurface2"
             android:contentDescription="Album art" />
 
         <ImageView
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/themeTextPrimary"
         android:textSize="13sp"
         android:textStyle="bold"
         android:ellipsize="end"
@@ -46,7 +46,7 @@
         android:id="@+id/tv_grid_artist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#AAAAAA"
+        android:textColor="?attr/themeTextSecondary"
         android:textSize="11sp"
         android:ellipsize="end"
         android:maxLines="1" />

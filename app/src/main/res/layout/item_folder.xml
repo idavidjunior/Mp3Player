@@ -17,7 +17,7 @@
             android:id="@+id/tv_folder_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/themeTextPrimary"
             android:textSize="15sp"
             android:textStyle="bold"
             android:ellipsize="end"
@@ -27,7 +27,7 @@
             android:id="@+id/tv_folder_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#666666"
+            android:textColor="?attr/themeTextTertiary"
             android:textSize="11sp"
             android:ellipsize="start"
             android:maxLines="1" />
@@ -36,7 +36,7 @@
             android:id="@+id/tv_folder_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#AAAAAA"
+            android:textColor="?attr/themeTextSecondary"
             android:textSize="12sp" />
     </LinearLayout>
 

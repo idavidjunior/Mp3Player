@@ -25,6 +25,7 @@ import com.mp3player.MainActivity
 import com.mp3player.R
 import com.mp3player.data.EqPreset
 import com.mp3player.data.EqPresetManager
+import com.mp3player.util.resolveThemeColor
 
 class EqualizerFragment : DialogFragment() {
 
@@ -261,7 +262,7 @@ class EqualizerFragment : DialogFragment() {
         val freq = virtualFrequencies[vIdx]
         val label = TextView(requireContext())
         label.text = if (freq >= 1000f) "%.0fK".format(freq / 1000f) else "%.0f".format(freq)
-        label.setTextColor(0xFF999999.toInt())
+        label.setTextColor(requireContext().resolveThemeColor(R.attr.themeTextSecondary))
         label.textSize = 10f
         label.typeface = android.graphics.Typeface.DEFAULT_BOLD
         label.gravity = Gravity.END or Gravity.CENTER_VERTICAL
@@ -491,8 +492,8 @@ class EqualizerFragment : DialogFragment() {
         input.inputType = android.text.InputType.TYPE_CLASS_NUMBER or
                 android.text.InputType.TYPE_NUMBER_FLAG_SIGNED or
                 android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
-        input.setTextColor(0xFFFFFFFF.toInt())
-        input.setHintTextColor(0xFF888888.toInt())
+        input.setTextColor(requireContext().resolveThemeColor(R.attr.themeTextPrimary))
+        input.setHintTextColor(requireContext().resolveThemeColor(R.attr.themeTextSecondary))
         AlertDialog.Builder(requireContext())
             .setTitle("Pre-amplificador")
             .setView(input)
@@ -535,8 +536,8 @@ class EqualizerFragment : DialogFragment() {
         val gains = getCurrentGains()
         val input = EditText(requireContext())
         input.setHint("Nome do preset")
-        input.setTextColor(0xFFFFFFFF.toInt())
-        input.setHintTextColor(0xFF888888.toInt())
+        input.setTextColor(requireContext().resolveThemeColor(R.attr.themeTextPrimary))
+        input.setHintTextColor(requireContext().resolveThemeColor(R.attr.themeTextSecondary))
         AlertDialog.Builder(requireContext())
             .setTitle("Salvar como Preset")
             .setView(input)

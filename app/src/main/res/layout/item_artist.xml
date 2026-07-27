@@ -13,7 +13,7 @@
         android:layout_height="52dp"
         android:layout_marginStart="4dp"
         android:scaleType="centerCrop"
-        android:background="#2A2A2A"
+        android:background="?attr/themeSurface2"
         android:contentDescription="Artist art" />
 
     <LinearLayout
@@ -27,7 +27,7 @@
             android:id="@+id/tv_artist_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/themeTextPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             android:ellipsize="end"
@@ -37,7 +37,7 @@
             android:id="@+id/tv_artist_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#AAAAAA"
+            android:textColor="?attr/themeTextSecondary"
             android:textSize="13sp"
             android:ellipsize="end"
             android:maxLines="1" />

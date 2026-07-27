@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="#1E1E1E"
+        android:background="?attr/themeSurface"
         android:padding="8dp">
 
         <View
@@ -26,7 +26,7 @@
             android:layout_height="52dp"
             android:layout_marginStart="8dp"
             android:scaleType="centerCrop"
-            android:background="#2A2A2A"
+            android:background="?attr/themeSurface2"
             android:contentDescription="Album art" />
 
         <LinearLayout
@@ -40,7 +40,7 @@
                 android:id="@+id/tv_card_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/themeTextPrimary"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:ellipsize="end"
@@ -50,7 +50,7 @@
                 android:id="@+id/tv_card_artist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#AAAAAA"
+                android:textColor="?attr/themeTextSecondary"
                 android:textSize="13sp"
                 android:ellipsize="end"
                 android:maxLines="1" />
@@ -59,7 +59,7 @@
                 android:id="@+id/tv_card_album"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#888888"
+                android:textColor="?attr/themeTextTertiary"
                 android:textSize="12sp"
                 android:ellipsize="end"
                 android:maxLines="1" />
@@ -76,7 +76,7 @@
                 android:id="@+id/tv_card_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#888888"
+                android:textColor="?attr/themeTextTertiary"
                 android:textSize="12sp" />
 
             <ImageView

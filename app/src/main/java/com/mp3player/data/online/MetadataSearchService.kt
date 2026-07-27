@@ -2,6 +2,7 @@ package com.mp3player.data.online
 
 import android.content.Context
 import android.util.Log
+import com.mp3player.data.model.AlbumArtOption
 import com.mp3player.data.model.MusicMetadata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -219,6 +220,8 @@ object MetadataSearchService {
         var trackNumber: String? = null
         var artUrl: String? = null
 
+        // Collect ALL unique art URLs from all results
+        val allArtUrls = mutableSetOf<String>()
         for (r in results) {
             if (title == null && r.title != null) title = r.title
             if (artist == null && r.artist != null) artist = r.artist
@@ -227,12 +230,11 @@ object MetadataSearchService {
             if (genre == null && r.genre != null) genre = r.genre
             if (trackNumber == null && r.trackNumber != null) trackNumber = r.trackNumber
             if (artUrl == null && r.albumArtUrl != null) artUrl = r.albumArtUrl
+            if (r.albumArtUrl != null) allArtUrls.add(r.albumArtUrl)
         }
 
-        // Download album art
-        var artBytes: ByteArray? = null
-        var artMime = "image/jpeg"
-        fun downloadFromUrl(url: String): Boolean {
+        // Helper to download a single URL to bytes
+        fun downloadBytes(url: String): Pair<ByteArray, String>? {
             return try {
                 var currentUrl = url
                 var attempts = 0
@@ -250,51 +252,62 @@ object MetadataSearchService {
                     if (code in 300..399) {
                         val location = conn.getHeaderField("Location")
                         conn.disconnect()
-                        if (location == null) { Log.w(TAG, "Redirect with no Location"); return false }
+                        if (location == null) { Log.w(TAG, "Redirect with no Location"); return null }
                         currentUrl = if (location.startsWith("http")) location else URL(URL(currentUrl), location).toString()
                         Log.i(TAG, "Redirect $attempts -> $currentUrl")
                         continue
                     }
                     if (code != 200) {
-                        Log.w(TAG, "HTTP $code for $currentUrl"); conn.disconnect(); return false
+                        Log.w(TAG, "HTTP $code for $currentUrl"); conn.disconnect(); return null
                     }
                     val stream = conn.inputStream
                     val baos = ByteArrayOutputStream()
                     stream.copyTo(baos)
-                    artBytes = baos.toByteArray()
+                    val bytes = baos.toByteArray()
                     stream.close()
+                    val mime = conn.contentType ?: "image/jpeg"
                     conn.disconnect()
-                    artMime = conn.contentType ?: "image/jpeg"
-                    return true
+                    return Pair(bytes, mime)
                 }
                 Log.w(TAG, "Too many redirects for $url")
-                false
+                null
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to download art from $url: ${e.javaClass.simpleName}: ${e.message?.take(80)}")
-                false
+                null
             }
         }
 
-        // Try Cover Art Archive first
-        if (artUrl != null) {
-            downloadFromUrl(artUrl)
+        // Download album art - collect multiple sources
+        val artOptions = mutableListOf<AlbumArtOption>()
+
+        // Also search for additional art sources
+        val extraArtUrls = mutableListOf<String>()
+
+        // iTunes artwork search (multiple results, up to 3)
+        if (artist != null) {
+            val itunesArts = searchItunesArtworkMultiple(artist, album, 3)
+            extraArtUrls.addAll(itunesArts)
         }
 
-        // Fallback: search iTunes for artwork using artist+album
-        if (artBytes == null && artist != null && album != null) {
-            val artUrl2 = searchItunesArtwork(artist, album)
-            if (artUrl2 != null) {
-                downloadFromUrl(artUrl2)
+        // Combine all URLs: first from results, then extra
+        for (u in allArtUrls) {
+            if (artOptions.size >= 4) break
+            downloadBytes(u)?.let { (bytes, mime) ->
+                artOptions.add(AlbumArtOption(bytes, mime, "MusicBrainz / Cover Art Archive"))
+            }
+        }
+        for (u in extraArtUrls) {
+            if (artOptions.size >= 4) break
+            if (u in allArtUrls) continue
+            downloadBytes(u)?.let { (bytes, mime) ->
+                artOptions.add(AlbumArtOption(bytes, mime, "iTunes"))
             }
         }
 
-        // Last resort fallback: search iTunes with artist only
-        if (artBytes == null && artist != null && album == null) {
-            val artUrl2 = searchItunesArtwork(artist, null)
-            if (artUrl2 != null) {
-                downloadFromUrl(artUrl2)
-            }
-        }
+        // Primary art = first success
+        val primaryArt = artOptions.firstOrNull()
+        val artBytes = primaryArt?.bytes
+        val artMime = primaryArt?.mime ?: "image/jpeg"
 
         return MusicMetadata(
             title = title?.ifBlank { null },
@@ -304,7 +317,8 @@ object MetadataSearchService {
             genre = genre?.ifBlank { null },
             trackNumber = trackNumber?.ifBlank { null },
             albumArtBytes = artBytes,
-            albumArtMime = artMime
+            albumArtMime = artMime,
+            albumArtOptions = if (artOptions.size > 1) artOptions else null
         )
     }
 
@@ -590,6 +604,51 @@ object MetadataSearchService {
             Log.w(TAG, "YouTube search failed: ${e.message}")
         }
         return null
+    }
+
+    /** Search iTunes for multiple album art options using artist and/or album name. Returns up to `maxResults` art URLs. */
+    private fun searchItunesArtworkMultiple(artist: String, album: String?, maxResults: Int = 3): List<String> {
+        if (artist.isBlank()) return emptyList()
+        val term = buildList {
+            add(artist)
+            if (album?.isNotBlank() == true) add(album)
+        }.joinToString(" ")
+        if (term.isBlank()) return emptyList()
+
+        val artUrls = mutableListOf<String>()
+
+        // Try BR first, then US (broader catalog)
+        for (country in listOf("BR", "US")) {
+            if (artUrls.size >= maxResults) break
+            val encoded = URLEncoder.encode(term, "UTF-8")
+            val url = "https://itunes.apple.com/search?term=$encoded&entity=album&limit=10&country=$country"
+            val json = httpGet(url) ?: continue
+
+            try {
+                val root = JSONObject(json)
+                val results = root.optJSONArray("results") ?: continue
+                val artistLower = artist.lowercase()
+
+                for (i in 0 until results.length()) {
+                    if (artUrls.size >= maxResults) break
+                    val item = results.getJSONObject(i)
+                    val itemArtist = item.optString("artistName", "").lowercase()
+                    val artUrl = item.optString("artworkUrl100", "").ifBlank { null }
+                        ?.replace("100x100bb", "600x600bb") ?: continue
+
+                    // Match artist name
+                    if (itemArtist == artistLower || itemArtist.contains(artistLower) || artistLower.contains(itemArtist)) {
+                        if (artUrl !in artUrls) {
+                            artUrls.add(artUrl)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to parse iTunes artwork multiple: ${e.message}")
+            }
+        }
+
+        return artUrls
     }
 
     /** Search iTunes for album art using artist and/or album name. Returns art URL or null. */

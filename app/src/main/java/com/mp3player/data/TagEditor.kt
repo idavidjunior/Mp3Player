@@ -8,6 +8,8 @@ import android.os.Build
 import android.provider.MediaStore
 import android.widget.EditText
 import android.widget.ImageView
+import com.mp3player.R
+import com.mp3player.util.resolveThemeColor
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.mp3player.Song
@@ -204,7 +206,7 @@ object TagEditor {
         val previewArt = ImageView(context).apply {
             layoutParams = LinearLayout.LayoutParams(120, 120).apply { setMargins(0, 16, 0, 8) }
             scaleType = ImageView.ScaleType.CENTER_CROP
-            setBackgroundColor(0xFF2A2A2A.toInt())
+            setBackgroundColor(context.resolveThemeColor(R.attr.themeSurface2))
         }
         layout.addView(previewArt)
 
