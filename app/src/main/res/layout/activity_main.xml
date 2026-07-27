@@ -109,6 +109,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_skip_previous"
+                    android:tint="?attr/themeTextSecondary"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Anterior"
                     android:scaleType="centerInside"
@@ -129,6 +130,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_skip_next"
+                    android:tint="?attr/themeTextSecondary"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Próximo"
                     android:scaleType="centerInside"
@@ -140,6 +142,7 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:src="@android:drawable/arrow_up_float"
+                android:tint="?attr/themeTextSecondary"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Expandir"
                 android:scaleType="centerInside" />
@@ -204,6 +207,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:src="@drawable/ic_skip_previous"
+                    android:tint="?attr/themeTextSecondary"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Anterior"
                     android:scaleType="centerInside"
@@ -230,6 +234,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:src="@drawable/ic_skip_next"
+                    android:tint="?attr/themeTextSecondary"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Próximo"
                     android:scaleType="centerInside"
@@ -258,6 +263,7 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:src="@android:drawable/ic_menu_compass"
+                    android:tint="?attr/themeTextSecondary"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Sleep timer" />
 

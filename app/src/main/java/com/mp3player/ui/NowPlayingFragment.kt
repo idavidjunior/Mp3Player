@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.mp3player.*
+import com.mp3player.util.resolveThemeColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -134,7 +135,7 @@ class NowPlayingFragment : Fragment() {
         btnShuffle.setOnClickListener {
             musicPlayer?.let { mp ->
                 val mode = mp.toggleShuffle()
-                btnShuffle.setColorFilter(if (mode == ShuffleMode.ON) 0xFF1DB954.toInt() else 0xFFFFFFFF.toInt())
+                btnShuffle.setColorFilter(if (mode == ShuffleMode.ON) 0xFF1DB954.toInt() else requireContext().resolveThemeColor(R.attr.themeTextSecondary))
                 Toast.makeText(context, "Aleatório: ${if (mode == ShuffleMode.ON) "Ligado" else "Desligado"}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -154,7 +155,7 @@ class NowPlayingFragment : Fragment() {
                         RepeatMode.NONE -> R.drawable.ic_repeat
                     }
                 )
-                btnRepeat.setColorFilter(if (mode != RepeatMode.NONE) 0xFF1DB954.toInt() else 0xFFFFFFFF.toInt())
+                btnRepeat.setColorFilter(if (mode != RepeatMode.NONE) 0xFF1DB954.toInt() else requireContext().resolveThemeColor(R.attr.themeTextSecondary))
                 Toast.makeText(context, "Repetir: $label", Toast.LENGTH_SHORT).show()
             }
         }
@@ -214,7 +215,7 @@ class NowPlayingFragment : Fragment() {
         btnPlayPause.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play_arrow)
 
         musicPlayer?.let { mp ->
-            btnShuffle.setColorFilter(if (mp.shuffleMode == ShuffleMode.ON) 0xFF1DB954.toInt() else 0xFFFFFFFF.toInt())
+            btnShuffle.setColorFilter(if (mp.shuffleMode == ShuffleMode.ON) 0xFF1DB954.toInt() else requireContext().resolveThemeColor(R.attr.themeTextSecondary))
             btnRepeat.setImageResource(
                 when (mp.repeatMode) {
                     RepeatMode.ONE -> R.drawable.ic_repeat_one
@@ -222,7 +223,7 @@ class NowPlayingFragment : Fragment() {
                     RepeatMode.NONE -> R.drawable.ic_repeat
                 }
             )
-            btnRepeat.setColorFilter(if (mp.repeatMode != RepeatMode.NONE) 0xFF1DB954.toInt() else 0xFFFFFFFF.toInt())
+            btnRepeat.setColorFilter(if (mp.repeatMode != RepeatMode.NONE) 0xFF1DB954.toInt() else requireContext().resolveThemeColor(R.attr.themeTextSecondary))
         }
         song?.let { updateFavoriteIcon(it.path) }
     }
@@ -231,7 +232,7 @@ class NowPlayingFragment : Fragment() {
         lifecycleScope.launch {
             val repo = com.mp3player.data.repository.MusicRepository(requireContext())
             val fav = repo.isFavoriteSync(songPath)
-            btnFavorite.setColorFilter(if (fav) 0xFFFF4444.toInt() else 0xFFFFFFFF.toInt())
+            btnFavorite.setColorFilter(if (fav) 0xFFFF4444.toInt() else requireContext().resolveThemeColor(R.attr.themeTextSecondary))
         }
     }
 
@@ -286,7 +287,7 @@ class NowPlayingFragment : Fragment() {
                         override fun onFinish() {
                             musicPlayer?.pause()
                             btnPlayPause.setImageResource(R.drawable.ic_play_arrow)
-                            btnSleepTimer.setColorFilter(0xFFFFFFFF.toInt())
+                            btnSleepTimer.setColorFilter(requireContext().resolveThemeColor(R.attr.themeTextSecondary))
                             Toast.makeText(context, "Sleep timer: reprodução pausada", Toast.LENGTH_SHORT).show()
                             sleepTimerMinutes = 0
                             sleepTimer = null
@@ -294,7 +295,7 @@ class NowPlayingFragment : Fragment() {
                     }.start()
                     btnSleepTimer.setColorFilter(0xFF1DB954.toInt())
                 } else {
-                    btnSleepTimer.setColorFilter(0xFFFFFFFF.toInt())
+                    btnSleepTimer.setColorFilter(requireContext().resolveThemeColor(R.attr.themeTextSecondary))
                 }
             }
             .setPositiveButton("OK", null)

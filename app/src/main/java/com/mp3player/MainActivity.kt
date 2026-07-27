@@ -491,7 +491,7 @@ class MainActivity : AppCompatActivity() {
             playerService?.musicPlayer?.let { mp ->
                 val mode = mp.toggleShuffle()
                 val isOn = mode == ShuffleMode.ON
-                btnShuffle.setColorFilter(if (isOn) 0xFF1DB954.toInt() else 0xFFFFFFFF.toInt())
+                btnShuffle.setColorFilter(if (isOn) 0xFF1DB954.toInt() else resolveThemeColor(R.attr.themeTextSecondary))
                 Toast.makeText(this, "Aleatório: ${if (isOn) "Ligado" else "Desligado"}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -511,7 +511,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 btnRepeat.setImageResource(icon)
                 btnRepeat.setColorFilter(
-                    if (mode != RepeatMode.NONE) 0xFF1DB954.toInt() else 0xFFFFFFFF.toInt()
+                    if (mode != RepeatMode.NONE) 0xFF1DB954.toInt() else resolveThemeColor(R.attr.themeTextSecondary)
                 )
                 Toast.makeText(this, "Repetir: $label", Toast.LENGTH_SHORT).show()
             }
@@ -585,7 +585,7 @@ class MainActivity : AppCompatActivity() {
                                 playerService?.musicPlayer?.pause()
                                 btnPlayPause.setImageResource(R.drawable.ic_play_arrow)
                                 btnMiniPlayPause.setImageResource(R.drawable.ic_play_arrow)
-                                btnSleepTimer.setColorFilter(0xFFFFFFFF.toInt())
+                                btnSleepTimer.setColorFilter(resolveThemeColor(R.attr.themeTextSecondary))
                                 Toast.makeText(this@MainActivity, "Sleep timer: reprodução pausada", Toast.LENGTH_SHORT).show()
                             }
                             sleepTimerMinutes = 0
@@ -594,7 +594,7 @@ class MainActivity : AppCompatActivity() {
                     }.start()
                     btnSleepTimer.setColorFilter(0xFF1DB954.toInt())
                 } else {
-                    btnSleepTimer.setColorFilter(0xFFFFFFFF.toInt())
+                    btnSleepTimer.setColorFilter(resolveThemeColor(R.attr.themeTextSecondary))
                 }
             }
             .setPositiveButton("OK", null)
