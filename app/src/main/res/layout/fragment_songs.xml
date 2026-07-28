@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/themeBackground"
@@ -14,120 +13,96 @@
         android:paddingHorizontal="6dp"
         android:paddingVertical="6dp">
 
-        <Button
+        <TextView
             android:id="@+id/btn_filter_all"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:layout_weight="1"
             android:layout_margin="2dp"
+            android:gravity="center"
             android:text="Todas"
             android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_active"
-            android:stateListAnimator="@null"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:maxLines="1"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            app:backgroundTint="@null" />
+            android:clickable="true"
+            android:focusable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_filter_favorites"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:layout_weight="1"
             android:layout_margin="2dp"
+            android:gravity="center"
             android:text="Favoritas"
             android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_inactive"
-            android:stateListAnimator="@null"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:maxLines="1"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            app:backgroundTint="@null" />
+            android:clickable="true"
+            android:focusable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_sort"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:layout_weight="1"
             android:layout_margin="2dp"
+            android:gravity="center"
             android:text="A-Z"
             android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_inactive"
-            android:stateListAnimator="@null"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:maxLines="1"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            app:backgroundTint="@null" />
+            android:clickable="true"
+            android:focusable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_view_mode"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:layout_weight="1"
             android:layout_margin="2dp"
+            android:gravity="center"
             android:text="Lista"
             android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_inactive"
-            android:stateListAnimator="@null"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:maxLines="1"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            app:backgroundTint="@null" />
+            android:clickable="true"
+            android:focusable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_multi_select"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:layout_weight="1"
             android:layout_margin="2dp"
+            android:gravity="center"
             android:text="Sel."
             android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_inactive"
-            android:stateListAnimator="@null"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:maxLines="1"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            app:backgroundTint="@null" />
+            android:clickable="true"
+            android:focusable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_add_selected"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:layout_weight="1"
             android:layout_margin="2dp"
+            android:gravity="center"
             android:text="+Fila"
             android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_active"
             android:visibility="gone"
-            android:stateListAnimator="@null"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:maxLines="1"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            app:backgroundTint="@null" />
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

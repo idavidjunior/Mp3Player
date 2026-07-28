@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -30,12 +29,12 @@ class SongsFragment : Fragment() {
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var tvEmpty: TextView
     private lateinit var adapter: SongAdapter
-    private lateinit var btnFilterAll: Button
-    private lateinit var btnFilterFav: Button
-    private lateinit var btnSort: Button
-    private lateinit var btnViewMode: Button
-    private lateinit var btnMultiSelect: Button
-    private lateinit var btnAddSelected: Button
+    private lateinit var btnFilterAll: TextView
+    private lateinit var btnFilterFav: TextView
+    private lateinit var btnSort: TextView
+    private lateinit var btnViewMode: TextView
+    private lateinit var btnMultiSelect: TextView
+    private lateinit var btnAddSelected: TextView
 
     private var allSongs: List<Song> = emptyList()
     private var onSongClick: ((Song) -> Unit)? = null
