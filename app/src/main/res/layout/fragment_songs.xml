@@ -27,7 +27,9 @@
             android:stateListAnimator="@null"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:insetLeft="0dp"
+            android:insetRight="0dp" />
 
         <Button
             android:id="@+id/btn_filter_favorites"
@@ -43,7 +45,9 @@
             android:stateListAnimator="@null"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:insetLeft="0dp"
+            android:insetRight="0dp" />
 
         <Button
             android:id="@+id/btn_sort"
@@ -59,7 +63,9 @@
             android:stateListAnimator="@null"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:insetLeft="0dp"
+            android:insetRight="0dp" />
 
         <Button
             android:id="@+id/btn_view_mode"
@@ -75,7 +81,9 @@
             android:stateListAnimator="@null"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:insetLeft="0dp"
+            android:insetRight="0dp" />
 
         <Button
             android:id="@+id/btn_multi_select"
@@ -91,7 +99,9 @@
             android:stateListAnimator="@null"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:insetLeft="0dp"
+            android:insetRight="0dp" />
 
         <Button
             android:id="@+id/btn_add_selected"
@@ -108,7 +118,9 @@
             android:stateListAnimator="@null"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:insetLeft="0dp"
+            android:insetRight="0dp" />
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
