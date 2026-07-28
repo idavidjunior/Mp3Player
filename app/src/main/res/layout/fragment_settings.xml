@@ -124,6 +124,48 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/card_playback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reprodução"
+                android:textColor="?attr/themeTextPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_sleep_default"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="8dp"
+                android:text="Sleep timer padrão: Desligado"
+                android:backgroundTint="?attr/themeSurface2"
+                android:textColor="?attr/themeTextPrimary"
+                android:textSize="12sp"
+                android:gravity="start|center_vertical"
+                android:paddingHorizontal="12dp"
+                android:stateListAnimator="@null" />
+
+            <Button
+                android:id="@+id/btn_open_equalizer"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:text="Abrir Equalizador"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/onPrimary"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/card_library"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -358,6 +400,35 @@
                     android:layout_marginTop="4dp"
                     android:textColor="?attr/themeTextSecondary"
                     android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_licenses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Licenças Open Source"
+                android:textColor="?attr/themeTextPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Toque para ver as licenças das bibliotecas utilizadas"
+                android:textColor="?attr/themeHint"
+                android:textSize="12sp" />
 
         </LinearLayout>
 

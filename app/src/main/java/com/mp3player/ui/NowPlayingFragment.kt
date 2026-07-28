@@ -275,7 +275,8 @@ class NowPlayingFragment : Fragment() {
     private fun showSleepTimerDialog() {
         val options = arrayOf("Desligado", "15 min", "30 min", "45 min", "60 min", "90 min")
         val values = intArrayOf(0, 15, 30, 45, 60, 90)
-        val checked = values.indexOf(sleepTimerMinutes)
+        val defaultVal = requireContext().getSharedPreferences("mp3player_prefs", 0).getString("sleep_timer_default", "0")?.toIntOrNull() ?: 0
+        val checked = values.indexOf(if (sleepTimerMinutes > 0) sleepTimerMinutes else defaultVal)
         android.app.AlertDialog.Builder(requireContext())
             .setTitle("Sleep Timer")
             .setSingleChoiceItems(options, if (checked >= 0) checked else 0) { _, which ->

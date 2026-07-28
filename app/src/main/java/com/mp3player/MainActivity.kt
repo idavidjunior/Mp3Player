@@ -570,7 +570,8 @@ class MainActivity : AppCompatActivity() {
     private fun showSleepTimerDialog() {
         val options = arrayOf("Desligado", "15 min", "30 min", "45 min", "60 min", "90 min")
         val values = intArrayOf(0, 15, 30, 45, 60, 90)
-        val checked = values.indexOf(sleepTimerMinutes)
+        val defaultVal = getSharedPreferences("mp3player_prefs", 0).getString("sleep_timer_default", "0")?.toIntOrNull() ?: 0
+        val checked = values.indexOf(if (sleepTimerMinutes > 0) sleepTimerMinutes else defaultVal)
 
         AlertDialog.Builder(this)
             .setTitle("Sleep Timer")

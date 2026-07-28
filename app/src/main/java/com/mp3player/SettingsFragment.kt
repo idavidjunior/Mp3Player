@@ -1,5 +1,6 @@
 package com.mp3player
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -19,6 +20,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.mp3player.ui.EqualizerFragment
 
 class SettingsFragment : Fragment() {
 
@@ -89,6 +91,30 @@ class SettingsFragment : Fragment() {
             requireActivity().recreate()
         }
 
+        val btnSleepDefault = v.findViewById<Button>(R.id.btn_sleep_default)
+        val sleepDefault = prefs?.getString("sleep_timer_default", "0")?.toIntOrNull() ?: 0
+        val sleepLabels = arrayOf("Desligado", "15 min", "30 min", "45 min", "60 min", "90 min")
+        val sleepValues = intArrayOf(0, 15, 30, 45, 60, 90)
+        val sleepIdx = sleepValues.indexOf(sleepDefault).coerceAtLeast(0)
+        btnSleepDefault.text = "Sleep timer padrão: ${sleepLabels[sleepIdx]}"
+        btnSleepDefault.setOnClickListener {
+            val cur = sleepValues.indexOf(prefs?.getString("sleep_timer_default", "0")?.toIntOrNull() ?: 0).coerceAtLeast(0)
+            AlertDialog.Builder(requireContext())
+                .setTitle("Sleep Timer Padrão")
+                .setSingleChoiceItems(sleepLabels, cur) { _, which ->
+                    val value = sleepValues[which]
+                    prefs?.edit()?.putString("sleep_timer_default", value.toString())?.apply()
+                    btnSleepDefault.text = "Sleep timer padrão: ${sleepLabels[which]}"
+                }
+                .setPositiveButton("OK", null)
+                .show()
+        }
+
+        v.findViewById<View>(R.id.btn_open_equalizer).setOnClickListener {
+            val eq = EqualizerFragment()
+            eq.show(parentFragmentManager, "equalizer")
+        }
+
         btnBrowse.setOnClickListener {
             folderPickerLauncher.launch(null)
         }
@@ -111,6 +137,26 @@ class SettingsFragment : Fragment() {
         } catch (e: Exception) {
             tvVersion.text = "MP3 Player v1.0.0"
             tvBuild.text = "Build info unavailable"
+        }
+
+        v.findViewById<View>(R.id.card_licenses).setOnClickListener {
+            val libs = arrayOf(
+                "AndroidX AppCompat — Apache 2.0",
+                "Material Components — Apache 2.0",
+                "Room — Apache 2.0",
+                "Glide — Apache 2.0 / BSD 3-Clause",
+                "Media3 (ExoPlayer) — Apache 2.0",
+                "Kotlin Coroutines — Apache 2.0",
+                "JAudiotagger — LGPL 2.1",
+                "mp3agic — Apache 2.0",
+                "Chromaprint — LGPL 2.1",
+                "KissFFT — BSD 3-Clause"
+            )
+            AlertDialog.Builder(requireContext())
+                .setTitle("Licenças Open Source")
+                .setItems(libs) { _, _ -> }
+                .setPositiveButton("OK", null)
+                .show()
         }
 
         tvDevice.text = "${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})"
