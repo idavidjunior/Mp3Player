@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/themeBackground"
@@ -30,7 +31,7 @@
             android:maxLines="1"
             android:insetLeft="0dp"
             android:insetRight="0dp"
-            android:backgroundTint="@null" />
+            app:backgroundTint="@null" />
 
         <Button
             android:id="@+id/btn_filter_favorites"
@@ -49,7 +50,7 @@
             android:maxLines="1"
             android:insetLeft="0dp"
             android:insetRight="0dp"
-            android:backgroundTint="@null" />
+            app:backgroundTint="@null" />
 
         <Button
             android:id="@+id/btn_sort"
@@ -68,7 +69,7 @@
             android:maxLines="1"
             android:insetLeft="0dp"
             android:insetRight="0dp"
-            android:backgroundTint="@null" />
+            app:backgroundTint="@null" />
 
         <Button
             android:id="@+id/btn_view_mode"
@@ -87,7 +88,7 @@
             android:maxLines="1"
             android:insetLeft="0dp"
             android:insetRight="0dp"
-            android:backgroundTint="@null" />
+            app:backgroundTint="@null" />
 
         <Button
             android:id="@+id/btn_multi_select"
@@ -106,7 +107,7 @@
             android:maxLines="1"
             android:insetLeft="0dp"
             android:insetRight="0dp"
-            android:backgroundTint="@null" />
+            app:backgroundTint="@null" />
 
         <Button
             android:id="@+id/btn_add_selected"
@@ -126,7 +127,7 @@
             android:maxLines="1"
             android:insetLeft="0dp"
             android:insetRight="0dp"
-            android:backgroundTint="@null" />
+            app:backgroundTint="@null" />
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
