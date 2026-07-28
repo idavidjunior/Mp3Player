@@ -266,8 +266,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         } else {
-            playerPanel.visibility = View.VISIBLE
-            playerPanelDivider.visibility = View.VISIBLE
+            val isSettings = bottomNav.selectedItemId == R.id.nav_settings
+            playerPanel.visibility = if (isSettings) View.GONE else View.VISIBLE
+            playerPanelDivider.visibility = if (isSettings) View.GONE else View.VISIBLE
             etSearch.visibility = if (bottomNav.selectedItemId == R.id.nav_songs) View.VISIBLE else View.GONE
         }
         bottomNav.visibility = View.VISIBLE
