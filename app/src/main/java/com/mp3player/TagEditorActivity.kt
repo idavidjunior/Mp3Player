@@ -3,6 +3,7 @@ package com.mp3player
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.util.Log
 import android.widget.GridLayout
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
@@ -101,83 +102,87 @@ class TagEditorActivity : AppCompatActivity() {
 
     private fun loadCurrentMetadata() {
         lifecycleScope.launch(Dispatchers.IO) {
-            var meta = FallbackTagProcessor.getInstance().read(File(songPath))
-            if (meta == null || !meta.isComplete) {
-                try {
-                    MediaMetadataRetriever().use { r ->
-                        r.setDataSource(songPath)
-                        val mmrTitle = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                        val mmrArtist = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-                        val mmrAlbum = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
-                        val mmrYear = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR)
-                        val mmrGenre = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE)
-                        val mmrTrack = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
+            try {
+                var meta = FallbackTagProcessor.getInstance().read(File(songPath))
+                if (meta == null || !meta.isComplete) {
+                    try {
+                        MediaMetadataRetriever().use { r ->
+                            r.setDataSource(songPath)
+                            val mmrTitle = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                            val mmrArtist = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+                            val mmrAlbum = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                            val mmrYear = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR)
+                            val mmrGenre = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE)
+                            val mmrTrack = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER)
 
-                        val existing = meta
-                        val t = existing?.title ?: mmrTitle?.ifBlank { null }
-                        val a = existing?.artist ?: mmrArtist?.ifBlank { null }
-                        val al = existing?.album ?: mmrAlbum?.ifBlank { null }
-                        if (t != null || a != null || al != null) {
-                            meta = MusicMetadata(
-                                title = t, artist = a, album = al,
-                                year = existing?.year ?: mmrYear?.ifBlank { null },
-                                genre = existing?.genre ?: mmrGenre?.ifBlank { null },
-                                trackNumber = existing?.trackNumber ?: mmrTrack?.ifBlank { null },
-                                albumArtBytes = existing?.albumArtBytes ?: r.embeddedPicture,
-                                albumArtMime = existing?.albumArtMime ?: "image/jpeg"
+                            val existing = meta
+                            val t = existing?.title ?: mmrTitle?.ifBlank { null }
+                            val a = existing?.artist ?: mmrArtist?.ifBlank { null }
+                            val al = existing?.album ?: mmrAlbum?.ifBlank { null }
+                            if (t != null || a != null || al != null) {
+                                meta = MusicMetadata(
+                                    title = t, artist = a, album = al,
+                                    year = existing?.year ?: mmrYear?.ifBlank { null },
+                                    genre = existing?.genre ?: mmrGenre?.ifBlank { null },
+                                    trackNumber = existing?.trackNumber ?: mmrTrack?.ifBlank { null },
+                                    albumArtBytes = existing?.albumArtBytes ?: r.embeddedPicture,
+                                    albumArtMime = existing?.albumArtMime ?: "image/jpeg"
+                                )
+                            }
+                        }
+                    } catch (_: Exception) {}
+                }
+
+                if (meta == null) {
+                    val artRetriever = try {
+                        MediaMetadataRetriever().use { it.setDataSource(songPath); it.embeddedPicture }
+                    } catch (_: Exception) { null }
+                    val folderBytes = if (artRetriever == null) AlbumArtProvider.findCoverBytes(songPath) else null
+                    withContext(Dispatchers.Main) {
+                        val cleanedTitle = MetadataSearchService.cleanQuery(songTitle)
+                        val extractedArtist = if (songArtist == "Desconhecido" || songArtist.isBlank()) {
+                            MetadataSearchService.extractArtistFromFilename(songPath)
+                        } else null
+                        // Strip artist prefix from title when we extracted it from filename
+                        val finalTitle = if (extractedArtist != null) {
+                            MetadataSearchService.cleanQuery(
+                                songTitle.replace(Regex("^" + java.util.regex.Pattern.quote(extractedArtist) + "\\s*[-–—|]\\s*", RegexOption.IGNORE_CASE), "")
                             )
+                        } else cleanedTitle
+                        etTitle.setText(finalTitle.ifBlank { cleanedTitle.ifBlank { songTitle } })
+                        etArtist.setText(extractedArtist ?: songArtist)
+                        etAlbum.setText(songAlbum)
+                        embeddedArtBytes = artRetriever ?: folderBytes
+                        embeddedArtMime = "image/jpeg"
+                        embeddedArtBytes?.let { b ->
+                            BitmapFactory.decodeByteArray(b, 0, b.size)?.let { ivAlbumArt.setImageBitmap(it) }
                         }
                     }
-                } catch (_: Exception) {}
-            }
+                    return@launch
+                }
 
-            if (meta == null) {
-                val artRetriever = try {
-                    MediaMetadataRetriever().use { it.setDataSource(songPath); it.embeddedPicture }
-                } catch (_: Exception) { null }
-                val folderBytes = if (artRetriever == null) AlbumArtProvider.findCoverBytes(songPath) else null
                 withContext(Dispatchers.Main) {
-                    val cleanedTitle = MetadataSearchService.cleanQuery(songTitle)
-                    val extractedArtist = if (songArtist == "Desconhecido" || songArtist.isBlank()) {
-                        MetadataSearchService.extractArtistFromFilename(songPath)
-                    } else null
-                    // Strip artist prefix from title when we extracted it from filename
-                    val finalTitle = if (extractedArtist != null) {
-                        MetadataSearchService.cleanQuery(
-                            songTitle.replace(Regex("^" + java.util.regex.Pattern.quote(extractedArtist) + "\\s*[-–—|]\\s*", RegexOption.IGNORE_CASE), "")
-                        )
-                    } else cleanedTitle
-                    etTitle.setText(finalTitle.ifBlank { cleanedTitle.ifBlank { songTitle } })
-                    etArtist.setText(extractedArtist ?: songArtist)
-                    etAlbum.setText(songAlbum)
-                    embeddedArtBytes = artRetriever ?: folderBytes
-                    embeddedArtMime = "image/jpeg"
-                    embeddedArtBytes?.let { b ->
-                        BitmapFactory.decodeByteArray(b, 0, b.size)?.let { ivAlbumArt.setImageBitmap(it) }
+                    etTitle.setText(meta?.title ?: songTitle)
+                    etArtist.setText(meta?.artist ?: songArtist)
+                    etAlbum.setText(meta?.album ?: songAlbum)
+                    meta?.year?.let { etYear.setText(it) }
+                    meta?.genre?.let { etGenre.setText(it) }
+                    meta?.trackNumber?.let { etTrack.setText(it) }
+                    meta?.albumArtBytes?.let { bytes ->
+                        embeddedArtBytes = bytes
+                        embeddedArtMime = meta?.albumArtMime ?: "image/jpeg"
+                        BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.let { ivAlbumArt.setImageBitmap(it) }
+                    }
+                    if (embeddedArtBytes == null) {
+                        val folderBytes = AlbumArtProvider.findCoverBytes(songPath)
+                        if (folderBytes != null) {
+                            embeddedArtBytes = folderBytes
+                            BitmapFactory.decodeByteArray(folderBytes, 0, folderBytes.size)?.let { ivAlbumArt.setImageBitmap(it) }
+                        }
                     }
                 }
-                return@launch
-            }
-
-            withContext(Dispatchers.Main) {
-                etTitle.setText(meta?.title ?: songTitle)
-                etArtist.setText(meta?.artist ?: songArtist)
-                etAlbum.setText(meta?.album ?: songAlbum)
-                meta?.year?.let { etYear.setText(it) }
-                meta?.genre?.let { etGenre.setText(it) }
-                meta?.trackNumber?.let { etTrack.setText(it) }
-                meta?.albumArtBytes?.let { bytes ->
-                    embeddedArtBytes = bytes
-                    embeddedArtMime = meta?.albumArtMime ?: "image/jpeg"
-                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.let { ivAlbumArt.setImageBitmap(it) }
-                }
-                if (embeddedArtBytes == null) {
-                    val folderBytes = AlbumArtProvider.findCoverBytes(songPath)
-                    if (folderBytes != null) {
-                        embeddedArtBytes = folderBytes
-                        BitmapFactory.decodeByteArray(folderBytes, 0, folderBytes.size)?.let { ivAlbumArt.setImageBitmap(it) }
-                    }
-                }
+            } catch (t: Throwable) {
+                Log.e("TagEditor", "loadCurrentMetadata crashed", t)
             }
         }
     }
