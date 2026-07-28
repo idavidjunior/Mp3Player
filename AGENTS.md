@@ -10,6 +10,12 @@ Ao final de cada tarefa neste projeto, sempre:
 2. **Atualizar no GitHub** (commit + push)
 3. **Sincronizar no PC**
 
+## Substituição só quando necessário
+- Só substitua algo se o atual **não estiver funcionando**.
+- Antes de trocar, **certifique-se e teste** que realmente está quebrado.
+- Se for substituir, a nova solução **precisa de fato funcionar** — sem trocar 6x até acertar.
+- Prefira mexer no mínimo possível para resolver o problema real.
+
 ## Bug Fix: TagEditorActivity fecha imediatamente ao editar tags (commit 2e0ae0a)
 - **Causa raiz:** InflateException no `TextInputLayout` do Material Components.
   `activity_tag_editor.xml` usa `com.google.android.material.textfield.TextInputLayout`
