@@ -298,9 +298,34 @@ class TagEditorActivity : AppCompatActivity() {
             if (merged.trackNumber != null) append("Faixa: ${merged.trackNumber}\n")
         }
         val artOptions = rawResult.albumArtOptions
+        val hasArt = rawResult.albumArtBytes != null
+
+        // Mostra preview da arte sempre que encontrada
+        val dp = resources.displayMetrics.density
+        val container = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(48, 16, 48, 16)
+        }
+        if (hasArt) {
+            val artIv = ImageView(this).apply {
+                layoutParams = android.widget.LinearLayout.LayoutParams(
+                    (180 * dp).toInt(), (180 * dp).toInt()
+                ).apply { gravity = android.view.Gravity.CENTER_HORIZONTAL; bottomMargin = (16 * dp).toInt() }
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setImageBitmap(BitmapFactory.decodeByteArray(rawResult.albumArtBytes, 0, rawResult.albumArtBytes!!.size))
+            }
+            container.addView(artIv)
+        }
+        val tv = TextView(this).apply {
+            text = msg
+            gravity = android.view.Gravity.CENTER_HORIZONTAL
+            textSize = 14f
+        }
+        container.addView(tv)
+
         val builder = AlertDialog.Builder(this)
             .setTitle("Metadados encontrados")
-            .setMessage("Aplicar as informacoes abaixo?\n\n$msg")
+            .setView(container)
             .setPositiveButton("Aplicar") { _, _ ->
                 merged.title?.let { etTitle.setText(it) }
                 merged.artist?.let { etArtist.setText(it) }
@@ -314,10 +339,7 @@ class TagEditorActivity : AppCompatActivity() {
                     val bmp = BitmapFactory.decodeByteArray(rawResult.albumArtBytes, 0, rawResult.albumArtBytes.size)
                     if (bmp != null) {
                         ivAlbumArt.setImageBitmap(bmp)
-                        Toast.makeText(this, "Arte do album encontrada!", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Toast.makeText(this, "Arte do album nao encontrada", Toast.LENGTH_SHORT).show()
                 }
                 Toast.makeText(this, "Metadados aplicados! Clique em SALVAR para persistir.", Toast.LENGTH_LONG).show()
             }
@@ -325,6 +347,10 @@ class TagEditorActivity : AppCompatActivity() {
 
         if (artOptions != null && artOptions.size > 1) {
             builder.setNeutralButton("Ver Capas (${artOptions.size})") { _, _ ->
+                showArtGallery(artOptions)
+            }
+        } else if (hasArt && artOptions?.size == 1) {
+            builder.setNeutralButton("Ver Capa") { _, _ ->
                 showArtGallery(artOptions)
             }
         } else if (mode == SearchMode.NORMAL) {

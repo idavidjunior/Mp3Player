@@ -28,6 +28,12 @@
         <item name="colorOnSurface">@color/dark_textPrimary</item>
         <item name="android:statusBarColor">@color/dark_background</item>
         <item name="android:navigationBarColor">@color/dark_background</item>
+        <item name="textInputStyle">@style/Widget.Mp3Player.Editor.TextInputLayout</item>
+    </style>
+
+    <style name="Widget.Mp3Player.Editor.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/editor_box_stroke</item>
+        <item name="hintTextColor">@color/editor_hint_text</item>
     </style>
 
     <style name="Theme_App_Dark" parent="Theme.Mp3Player">
