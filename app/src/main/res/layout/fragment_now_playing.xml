@@ -234,16 +234,15 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_equalizer"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="EQ"
-            android:textColor="?attr/themeTextPrimary"
-            android:textSize="12sp"
-            android:gravity="center"
+            android:src="@drawable/ic_equalizer"
+            android:tint="?attr/themeTextSecondary"
+            android:scaleType="center"
             android:contentDescription="Equalizador" />
     </LinearLayout>
 

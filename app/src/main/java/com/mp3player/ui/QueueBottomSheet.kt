@@ -77,7 +77,7 @@ class QueueBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun getMusicPlayer(): com.mp3player.MusicPlayer? {
-        return (activity as? MainActivity)?.playerService?.musicPlayer
+        return (activity as? com.mp3player.PlayerHost)?.playerService?.musicPlayer
     }
 
     inner class QueueAdapter : BaseAdapter() {

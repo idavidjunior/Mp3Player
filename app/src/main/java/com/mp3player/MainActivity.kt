@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PlayerHost {
 
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var fragmentContainer: androidx.fragment.app.FragmentContainerView
@@ -92,11 +92,13 @@ class MainActivity : AppCompatActivity() {
     private var isVolumeChanging = false
     private lateinit var playerPanelDivider: View
 
-    var playerService: PlayerService? = null
+    override var playerService: PlayerService? = null
         private set
     private var bound = false
     val songs = mutableListOf<Song>()
-    val playCountManager: PlayCountManager by lazy { PlayCountManager(this) }
+    override val playCountManager: PlayCountManager by lazy { PlayCountManager(this) }
+    override fun getCachedBitmap(path: String): Bitmap? = albumArtCache.get(path)
+    override fun putCachedBitmap(path: String, bitmap: Bitmap) { albumArtCache.put(path, bitmap) }
     private var currentIndex = -1
     private var isSeeking = false
     private var pendingPermission = false
@@ -112,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun openTagEditor(song: Song) {
+    override fun openTagEditor(song: Song) {
         val intent = Intent(this, TagEditorActivity::class.java).apply {
             putExtra("song_id", song.id)
             putExtra("song_path", song.path)
@@ -220,7 +222,7 @@ class MainActivity : AppCompatActivity() {
         seekBar.removeCallbacks(seekBarUpdater)
     }
 
-    fun hasRequiredPermission(): Boolean {
+    override fun hasRequiredPermission(): Boolean {
         return when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED
@@ -633,7 +635,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun playNext() {
+    override fun playNext() {
         if (currentPlaylist.isEmpty()) return
         playerService?.musicPlayer?.let { mp ->
             val next = mp.getNextIndex(currentIndex)
@@ -643,7 +645,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun playPrevious() {
+    override fun playPrevious() {
         if (currentPlaylist.isEmpty()) return
         playerService?.musicPlayer?.let { mp ->
             val prev = mp.getPrevIndex(currentIndex)
@@ -814,7 +816,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun loadSongs() {
+    override fun loadSongs() {
         if (!hasRequiredPermission()) return
         lifecycleScope.launch {
             val rawList = withContext(Dispatchers.IO) { querySongs() }

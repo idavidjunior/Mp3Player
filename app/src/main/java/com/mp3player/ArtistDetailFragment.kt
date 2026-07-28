@@ -42,7 +42,7 @@ class ArtistDetailFragment : Fragment() {
 
         adapter = SongAdapter(songs) { song -> onPlay?.invoke(song) }
         adapter.onEditTag = { song ->
-            (activity as? MainActivity)?.openTagEditor(song)
+            (activity as? PlayerHost)?.openTagEditor(song)
         }
         recyclerView.adapter = adapter
 

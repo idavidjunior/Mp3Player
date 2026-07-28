@@ -189,7 +189,7 @@ class EqualizerFragment : DialogFragment() {
     }
 
     private fun initEqualizer() {
-        val act = activity as? MainActivity
+        val act = activity as? com.mp3player.PlayerHost
         val sessionId = act?.playerService?.musicPlayer?.audioSessionId ?: 0
         if (sessionId == 0) {
             Handler(Looper.getMainLooper()).postDelayed({ initEqualizer() }, 500)

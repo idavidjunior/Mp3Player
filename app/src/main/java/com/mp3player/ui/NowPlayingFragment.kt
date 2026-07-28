@@ -13,7 +13,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -31,7 +30,6 @@ class NowPlayingFragment : Fragment() {
     private var isSeeking = false
     private var sleepTimer: CountDownTimer? = null
     private var sleepTimerMinutes = 0
-    private var albumArtCache = mutableMapOf<String, Bitmap?>()
 
     private val songChangeListener: (Song) -> Unit = { activity?.runOnUiThread { updateUI() } }
     private val playStateChangeListener: (Boolean) -> Unit = { playing ->
@@ -58,7 +56,7 @@ class NowPlayingFragment : Fragment() {
     private lateinit var btnSleepTimer: ImageButton
     private lateinit var ivVolume: ImageView
     private lateinit var volumeSeekBar: SeekBar
-    private lateinit var btnEqualizer: Button
+    private lateinit var btnEqualizer: ImageButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_now_playing, container, false)
@@ -70,8 +68,8 @@ class NowPlayingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val act = activity as? MainActivity
-        playerService = act?.playerService
+        val host = activity as? PlayerHost
+        playerService = host?.playerService
         musicPlayer = playerService?.musicPlayer
         updateUI()
         startSeekBarUpdate()
@@ -129,8 +127,8 @@ class NowPlayingFragment : Fragment() {
             }
         }
 
-        btnNext.setOnClickListener { (activity as? MainActivity)?.playNext() }
-        btnPrev.setOnClickListener { (activity as? MainActivity)?.playPrevious() }
+        btnNext.setOnClickListener { (activity as? PlayerHost)?.playNext() }
+        btnPrev.setOnClickListener { (activity as? PlayerHost)?.playPrevious() }
 
         btnShuffle.setOnClickListener {
             musicPlayer?.let { mp ->
@@ -164,8 +162,10 @@ class NowPlayingFragment : Fragment() {
             musicPlayer?.currentSong?.let { song ->
                 lifecycleScope.launch {
                     val repo = com.mp3player.data.repository.MusicRepository(requireContext())
+                    val wasFav = repo.isFavoriteSync(song.path)
                     repo.toggleFavorite(song)
                     updateFavoriteIcon(song.path)
+                    Toast.makeText(context, if (wasFav) "Removido dos favoritos" else "Adicionado aos favoritos", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -237,7 +237,8 @@ class NowPlayingFragment : Fragment() {
     }
 
     private fun loadAlbumArt(path: String) {
-        val cached = albumArtCache[path]
+        val host = activity as? PlayerHost
+        val cached = host?.getCachedBitmap(path)
         if (cached != null) {
             ivAlbumArt.setImageBitmap(cached)
             return
@@ -247,7 +248,7 @@ class NowPlayingFragment : Fragment() {
                 com.mp3player.data.AlbumArtProvider.getAlbumArt(path, requireContext())
             }
             if (bmp != null) {
-                albumArtCache[path] = bmp
+                host?.putCachedBitmap(path, bmp)
                 ivAlbumArt.setImageBitmap(bmp)
             } else {
                 ivAlbumArt.setImageResource(R.drawable.ic_launcher_foreground)

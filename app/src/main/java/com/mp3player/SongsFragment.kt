@@ -116,8 +116,7 @@ class SongsFragment : Fragment() {
             }
         }
         adapter.onAddToQueue = { song ->
-            val act = activity as? MainActivity
-            act?.playerService?.musicPlayer?.addToQueue(song)
+            (activity as? PlayerHost)?.playerService?.musicPlayer?.addToQueue(song)
             Toast.makeText(context, "Adicionado à fila: ${song.title}", Toast.LENGTH_SHORT).show()
         }
         adapter.onFavoriteClick = { song ->
@@ -126,7 +125,7 @@ class SongsFragment : Fragment() {
             }
         }
         adapter.onEditTag = { song ->
-            (activity as? MainActivity)?.openTagEditor(song)
+            (activity as? PlayerHost)?.openTagEditor(song)
         }
         adapter.viewMode = currentView
         adapter.currentSongPath = currentSongPath
@@ -205,7 +204,7 @@ class SongsFragment : Fragment() {
         }
 
         btnAddSelected.setOnClickListener {
-            val mp = (activity as? MainActivity)?.playerService?.musicPlayer
+            val mp = (activity as? PlayerHost)?.playerService?.musicPlayer
             val selected = adapter.selectedSongs.toList()
             if (mp != null && selected.isNotEmpty()) {
                 selected.forEach { mp.addToQueue(it) }
@@ -215,7 +214,7 @@ class SongsFragment : Fragment() {
         }
 
         swipeRefresh.setOnRefreshListener {
-            val act = activity as? MainActivity
+            val act = activity as? PlayerHost
             if (act != null && act.hasRequiredPermission()) {
                 act.loadSongs()
             }
@@ -264,8 +263,8 @@ class SongsFragment : Fragment() {
             adapter.favoritePaths = allFavPaths
 
             val playCounts = if (currentSort == SortMode.PLAY_COUNT) {
-                val act = activity as? MainActivity
-                act?.playCountManager?.getPlayCounts() ?: emptyMap()
+                val act = activity as? PlayerHost
+                act?.playCountManager?.getPlayCounts() ?: emptyMap<String, Int>()
             } else emptyMap()
             val sorted = SongAdapter.sortSongs(allSongs, currentSort, playCounts)
             val filtered = if (showFavoritesOnly) {
