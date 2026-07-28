@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.GridLayout
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -73,9 +74,20 @@ class TagEditorActivity : AppCompatActivity() {
         songArtist = intent.getStringExtra("song_artist") ?: ""
         songAlbum = intent.getStringExtra("song_album") ?: ""
 
+        // Fallback: construir content:// URI quando o caminho do arquivo não está disponível
+        // (DATA column pode vir vazia no Android 10+ com armazenamento com escopo)
+        if (songPath.isBlank() && songId != -1L) {
+            songPath = MediaStore.Audio.Media.getContentUri(
+                MediaStore.VOLUME_EXTERNAL, songId
+            ).toString()
+        }
+
         if (songId == -1L || songPath.isBlank()) {
-            Toast.makeText(this, "Erro: dados da música inválidos", Toast.LENGTH_SHORT).show()
-            finish()
+            AlertDialog.Builder(this)
+                .setTitle("Erro ao abrir editor")
+                .setMessage("Não foi possível identificar a música para edição.")
+                .setPositiveButton("OK") { _, _ -> finish() }
+                .show()
             return
         }
 
@@ -97,7 +109,10 @@ class TagEditorActivity : AppCompatActivity() {
         btnCancel = findViewById(R.id.btn_cancel)
         btnSave = findViewById(R.id.btn_save)
 
-        tvFileName.text = songPath.substringAfterLast('/')
+        tvFileName.text = when {
+            songPath.startsWith("content://") -> songTitle
+            else -> songPath.substringAfterLast('/')
+        }
     }
 
     private fun loadCurrentMetadata() {
