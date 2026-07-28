@@ -10,102 +10,105 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingHorizontal="10dp"
+        android:paddingHorizontal="6dp"
         android:paddingVertical="6dp">
 
         <Button
             android:id="@+id/btn_filter_all"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="28dp"
-            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="Todas"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_active"
-            android:paddingHorizontal="14dp"
             android:stateListAnimator="@null"
             android:minWidth="0dp"
-            android:minHeight="0dp" />
+            android:minHeight="0dp"
+            android:maxLines="1" />
 
         <Button
             android:id="@+id/btn_filter_favorites"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="28dp"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="Favoritas"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_inactive"
-            android:paddingHorizontal="14dp"
             android:stateListAnimator="@null"
             android:minWidth="0dp"
-            android:minHeight="0dp" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            android:minHeight="0dp"
+            android:maxLines="1" />
 
         <Button
             android:id="@+id/btn_sort"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="28dp"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="A-Z"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_inactive"
-            android:paddingHorizontal="12dp"
             android:stateListAnimator="@null"
             android:minWidth="0dp"
-            android:minHeight="0dp" />
+            android:minHeight="0dp"
+            android:maxLines="1" />
 
         <Button
             android:id="@+id/btn_view_mode"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="28dp"
-            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="Lista"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_inactive"
-            android:paddingHorizontal="12dp"
             android:stateListAnimator="@null"
             android:minWidth="0dp"
-            android:minHeight="0dp" />
+            android:minHeight="0dp"
+            android:maxLines="1" />
 
         <Button
             android:id="@+id/btn_multi_select"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="28dp"
-            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="Sel."
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_inactive"
-            android:paddingHorizontal="10dp"
             android:stateListAnimator="@null"
             android:minWidth="0dp"
-            android:minHeight="0dp" />
+            android:minHeight="0dp"
+            android:maxLines="1" />
 
         <Button
             android:id="@+id/btn_add_selected"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="28dp"
-            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="+Fila"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textAllCaps="false"
             android:textColor="?attr/themeTextPrimary"
             android:background="@drawable/btn_filter_active"
-            android:paddingHorizontal="10dp"
             android:visibility="gone"
             android:stateListAnimator="@null"
             android:minWidth="0dp"
-            android:minHeight="0dp" />
+            android:minHeight="0dp"
+            android:maxLines="1" />
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

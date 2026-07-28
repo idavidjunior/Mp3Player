@@ -18,3 +18,10 @@ Ao final de cada tarefa neste projeto, sempre:
 - **Correção:** Mudar `Theme.Mp3Player` para `Theme.MaterialComponents.DayNight.NoActionBar`
   e `Theme_App_Light` para `Theme.MaterialComponents.Light.NoActionBar`.
 - **Teste:** TagEditorActivity abre em ~357ms com todos os metadados carregados.
+
+## Melhoria: Preview da arte no diálogo de confirmação (commit 37a71db)
+- `showSearchConfirmation()` agora mostra a capa do álbum no próprio diálogo,
+  tanto para 1 quanto para múltiplas opções de arte
+- Botão "Ver Capa" (1 opção) ou "Ver Capas (N)" (N opções) sempre disponível
+- Cores do `TextInputLayout.OutlinedBox` agora usam `editor_box_stroke.xml`
+  e `editor_hint_text.xml` com contraste garantido (#888888 unfocused, green focused)
