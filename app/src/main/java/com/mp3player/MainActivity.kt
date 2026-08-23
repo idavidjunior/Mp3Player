@@ -413,7 +413,7 @@ class MainActivity : AppCompatActivity(), PlayerHost {
             tvSongArtist.text = song.artist
             loadAlbumArt(song.path)
 
-            EqStateLoader.restoreTo(mp, this)
+            EqStateLoader.restoreTo(mp, this, audioManager!!)
 
             songsFragment.setCurrentSongPath(song.path)
 

@@ -1,5 +1,6 @@
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.io.File
 
 plugins {
     id("com.android.application")
@@ -9,18 +10,21 @@ plugins {
 
 fun getVersionCode(): Int {
     val major = 1
-    val minor = 0
+    val minor = 1
     val patch = 0
     return major * 100000 + minor * 1000 + patch
 }
 
 fun getVersionName(): String {
-    return "1.0.0"
+    return "1.1.0"
 }
 
 fun getBuildDate(): String {
     return SimpleDateFormat("yyyy-MM-dd").format(Date())
 }
+
+val releaseKeystore = file("../release.jks")
+val hasReleaseKeystore = releaseKeystore.exists()
 
 android {
     namespace = "com.mp3player"
@@ -45,6 +49,17 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            if (hasReleaseKeystore) {
+                storeFile = releaseKeystore
+                storePassword = "Mp3Player2024!"
+                keyAlias = "release"
+                keyPassword = "Mp3Player2024!"
+            }
+        }
+    }
+
     buildTypes {
         debug {
             isMinifyEnabled = false
@@ -52,11 +67,14 @@ android {
             versionNameSuffix = "-debug"
         }
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (hasReleaseKeystore) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
@@ -92,6 +110,7 @@ val roomVersion = "2.6.1"
 val glideVersion = "4.16.0"
 val lifecycleVersion = "2.7.0"
 val media3Version = "1.2.1"
+val gsonVersion = "2.10.1"
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
@@ -130,4 +149,7 @@ dependencies {
 
     // mp3agic - fallback tag processor (lightweight, MP3-focused)
     implementation("com.mpatric:mp3agic:0.9.1")
+
+    // Gson for JSON serialization
+    implementation("com.google.code.gson:gson:$gsonVersion")
 }

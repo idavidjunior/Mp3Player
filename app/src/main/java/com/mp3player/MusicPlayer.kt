@@ -14,6 +14,8 @@ import androidx.media3.exoplayer.RenderersFactory
 import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import com.mp3player.data.audio.EqualizerAudioProcessor
+import com.mp3player.data.audio.EqualizerPresets
+import com.mp3player.data.model.EqualizerBand
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.random.Random
@@ -21,10 +23,55 @@ import kotlin.random.Random
 enum class RepeatMode { NONE, ONE, ALL }
 enum class ShuffleMode { OFF, ON }
 
-@OptIn(UnstableApi::class)
-class MusicPlayer(private val context: Context) {
+interface EqController {
+    fun setBandGain(band: Int, gainDb: Float)
+    fun setPreamp(gainDb: Float)
+    fun setEnabled(on: Boolean)
+    fun applyPreset(gains: FloatArray, preamp: Float)
+    fun reset()
+    fun restoreState(gains: FloatArray, preamp: Float, enabled: Boolean)
+    val gains: FloatArray
+    val preamp: Float
+    val enabled: Boolean
+    val gainReductionDb: Float
+}
 
-    var equalizerProcessor: EqualizerAudioProcessor? = null
+@OptIn(UnstableApi::class)
+class MusicPlayer(private val context: Context) : EqController {
+
+    private var equalizerProcessor: EqualizerAudioProcessor? = null
+    private var equalizerInitialized = false
+
+    private fun ensureEqualizerInitialized() {
+        if (!equalizerInitialized) {
+            equalizerProcessor = EqualizerAudioProcessor()
+            equalizerInitialized = true
+        }
+    }
+
+    override val gains: FloatArray
+        get() {
+            ensureEqualizerInitialized()
+            return equalizerProcessor?.allGains ?: FloatArray(EqualizerBand.BAND_COUNT) { 0f }
+        }
+
+    override val preamp: Float
+        get() {
+            ensureEqualizerInitialized()
+            return equalizerProcessor?.preampGainDb ?: 0f
+        }
+
+    override val enabled: Boolean
+        get() {
+            ensureEqualizerInitialized()
+            return equalizerProcessor?.enabled ?: true
+        }
+
+    override val gainReductionDb: Float
+        get() {
+            ensureEqualizerInitialized()
+            return equalizerProcessor?.gainReductionDb ?: 0f
+        }
 
     private var exoPlayer: ExoPlayer? = null
     val audioSessionId: Int get() = exoPlayer?.audioSessionId ?: 0
@@ -78,9 +125,8 @@ class MusicPlayer(private val context: Context) {
     }
 
     init {
-        val eqProc = EqualizerAudioProcessor()
-        equalizerProcessor = eqProc
         val renderersFactory = RenderersFactory { handler, videoListener, audioListener, textOutput, metadataOutput ->
+            ensureEqualizerInitialized()
             arrayOf(
                 MediaCodecAudioRenderer(
                     context,
@@ -88,7 +134,7 @@ class MusicPlayer(private val context: Context) {
                     handler,
                     audioListener,
                     androidx.media3.exoplayer.audio.AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                    eqProc as AudioProcessor
+                    equalizerProcessor!! as AudioProcessor
                 )
             )
         }
@@ -298,20 +344,41 @@ class MusicPlayer(private val context: Context) {
 
     fun getDuration(): Int = exoPlayer?.duration?.toInt() ?: 0
 
-    fun setEqBandGain(bandId: Int, gainDb: Float) {
-        equalizerProcessor?.setBandGain(bandId, gainDb)
+    override fun setBandGain(band: Int, gainDb: Float) {
+        ensureEqualizerInitialized()
+        val clamped = gainDb.coerceIn(-24f, 24f)
+        equalizerProcessor?.setBandGain(band, clamped)
     }
 
-    fun setEqPreampGain(gainDb: Float) {
-        equalizerProcessor?.setPreampGain(gainDb)
+    override fun setPreamp(gainDb: Float) {
+        ensureEqualizerInitialized()
+        val clamped = gainDb.coerceIn(-24f, 24f)
+        equalizerProcessor?.setPreampGain(clamped)
     }
 
-    fun resetEq() {
+    override fun setEnabled(on: Boolean) {
+        ensureEqualizerInitialized()
+        equalizerProcessor?.setEnabled(on)
+    }
+
+    override fun applyPreset(gains: FloatArray, preamp: Float) {
+        ensureEqualizerInitialized()
+        val clampedGains = FloatArray(gains.size) { gains[it].coerceIn(-24f, 24f) }
+        val clampedPreamp = preamp.coerceIn(-24f, 24f)
+        equalizerProcessor?.applyPreset(clampedGains, clampedPreamp)
+    }
+
+    override fun reset() {
+        ensureEqualizerInitialized()
         equalizerProcessor?.resetAllBands()
     }
 
-    fun applyEqPreset(gains: FloatArray, preamp: Float) {
-        equalizerProcessor?.applyPreset(gains, preamp)
+    override fun restoreState(gains: FloatArray, preamp: Float, enabled: Boolean) {
+        ensureEqualizerInitialized()
+        val clampedGains = FloatArray(gains.size) { gains[it].coerceIn(-24f, 24f) }
+        val clampedPreamp = preamp.coerceIn(-24f, 24f)
+        equalizerProcessor?.applyPreset(clampedGains, clampedPreamp)
+        equalizerProcessor?.setEnabled(enabled)
     }
 
     fun release() {
