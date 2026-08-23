@@ -44,7 +44,6 @@ class EqualizerAudioProcessor : AudioProcessor {
     private var cachedPreampLinear = 1.0f
     private var lastPreampGainDb = 0f
     private val random = java.util.Random()
-    private var debugCounter = 0
 
     init {
         for (i in 0 until bandCount) {
@@ -157,12 +156,6 @@ class EqualizerAudioProcessor : AudioProcessor {
             val remaining = inputBuffer.remaining() / channelCount
             if (remaining == 0) return
 
-            // Debug: log once per 1000 calls
-            if (debugCounter % 1000 == 0) {
-                Log.d("EQ_DEBUG", "queueInput: remaining=$remaining, channelCount=$channelCount, isActiveState=$isActiveState, enabled=$enabled, preampGainDb=$preampGainDb, cachedPreampLinear=$cachedPreampLinear")
-            }
-            debugCounter++
-
             // Bypass mode: passthrough audio unmodified
             if (!isActiveState) {
                 val size = inputBuffer.remaining()
@@ -176,17 +169,6 @@ class EqualizerAudioProcessor : AudioProcessor {
                 // IMPORTANT: consume input buffer so ExoPlayer advances
                 inputBuffer.position(inputBuffer.limit())
                 inputEnded = false
-                if (debugCounter % 100 == 1) {
-                    // Check first few samples in bypass
-                    val checkBuf = inputBuffer.duplicate()
-                    checkBuf.position(0)
-                    var nonZero = 0
-                    for (i in 0 until min(10, checkBuf.remaining() / 2)) {
-                        val s = checkBuf.getShort()
-                        if (s != 0) nonZero++
-                    }
-                    Log.d("EQ_DEBUG", "BYPASS: size=$size, nonZeroSamples=$nonZero/10, isActiveState=$isActiveState")
-                }
                 return
             }
 
@@ -201,11 +183,8 @@ class EqualizerAudioProcessor : AudioProcessor {
             }
 
             // Step 1: Convert to float [-1, 1] - apply preamp FIRST (correct gain staging)
-            var peakInput = 0f
             for (i in 0 until maxNeeded) {
-                val v = input[i].toFloat() / 32768f * cachedPreampLinear
-                filterOutput[i] = v
-                if (kotlin.math.abs(v) > peakInput) peakInput = kotlin.math.abs(v)
+                filterOutput[i] = input[i].toFloat() / 32768f * cachedPreampLinear
             }
 
             // Step 2: High-pass filter (20Hz) to remove subsonics
@@ -219,26 +198,9 @@ class EqualizerAudioProcessor : AudioProcessor {
                 }
             }
 
-            // Debug: check signal after filters
-            var peakAfterFilters = 0f
-            for (i in 0 until maxNeeded) {
-                val v = kotlin.math.abs(filterOutput[i])
-                if (v > peakAfterFilters) peakAfterFilters = v
-            }
-
             // Step 4: Peak limiter (with lookahead, envelope follower, makeup gain)
             peakLimiter?.process(filterOutput, limiterOutput, 0, maxNeeded) ?: run {
                 System.arraycopy(filterOutput, 0, limiterOutput, 0, maxNeeded)
-            }
-
-            // Debug: check signal after limiter
-            var peakAfterLimiter = 0f
-            for (i in 0 until maxNeeded) {
-                val v = kotlin.math.abs(limiterOutput[i])
-                if (v > peakAfterLimiter) peakAfterLimiter = v
-            }
-            if (debugCounter % 1000 == 2) {
-                Log.d("EQ_DEBUG", "peaks: in=$peakInput, afterFilters=$peakAfterFilters, afterLimiter=$peakAfterLimiter, gainReductionDb=${peakLimiter?.gainReductionDb}")
             }
 
             // Step 5: Soft clipper (tanh - transparent, musical)
@@ -282,19 +244,6 @@ class EqualizerAudioProcessor : AudioProcessor {
 
     override fun getOutput(): ByteBuffer {
         val buf = outputBuffer
-        if (buf.remaining() > 0 && debugCounter % 1000 == 500) {
-            val checkBuf = buf.duplicate()
-            checkBuf.position(0)
-            var nonZero = 0
-            var maxVal = 0
-            for (i in 0 until min(10, checkBuf.remaining() / 2)) {
-                val s = checkBuf.getShort()
-                if (s != 0) nonZero++
-                val abs = kotlin.math.abs(s)
-                if (abs > maxVal) maxVal = abs
-            }
-            Log.d("EQ_DEBUG", "getOutput: remaining=${buf.remaining()}, nonZero=$nonZero/10, maxShort=$maxVal")
-        }
         outputBuffer = ByteBuffer.allocate(0)
         return buf
     }
