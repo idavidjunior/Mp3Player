@@ -13,8 +13,13 @@ import kotlin.math.tanh
 @UnstableApi
 class EqualizerAudioProcessor : AudioProcessor {
 
+    private companion object {
+        const val SOFT_CLIP_THRESHOLD = 0.98f
+    }
+
     val bandCount = EqualizerBand.BAND_COUNT
     private val filters = Array(bandCount) { BiquadFilter() }
+    private val effects = EffectsChain()
     private var filterOutput: FloatArray = FloatArray(0)
     private var limiterOutput: FloatArray = FloatArray(0)
     private var workBuffer: FloatArray = FloatArray(0)
@@ -43,7 +48,7 @@ class EqualizerAudioProcessor : AudioProcessor {
 
     private var cachedPreampLinear = 1.0f
     private var lastPreampGainDb = 0f
-    private val random = java.util.Random()
+    private var ditherState = 0
 
     init {
         for (i in 0 until bandCount) {
@@ -63,8 +68,31 @@ class EqualizerAudioProcessor : AudioProcessor {
 
     private fun updateActiveState() {
         val anyGain = filters.any { it.isConfigured && kotlin.math.abs(it.gainDb) > 0.001f }
-        isActiveState = enabled && (kotlin.math.abs(preampGainDb) > 0.001f || anyGain)
+        isActiveState = enabled && (
+            kotlin.math.abs(preampGainDb) > 0.001f ||
+                anyGain ||
+                effects.isActive
+            )
     }
+
+    fun setBassBoost(amount: Float) {
+        effects.setBassBoost(amount)
+        updateActiveState()
+    }
+
+    fun setStereoWidth(amount: Float) {
+        effects.setStereoWidth(amount)
+        updateActiveState()
+    }
+
+    fun setReverbMix(amount: Float) {
+        effects.setReverbMix(amount)
+        updateActiveState()
+    }
+
+    fun getBassBoost(): Float = effects.bassBoost
+    fun getStereoWidth(): Float = effects.stereoWidth
+    fun getReverbMix(): Float = effects.reverbMix
 
     fun setBandGain(bandId: Int, gainDb: Float) {
         if (bandId in 0 until bandCount) {
@@ -141,6 +169,7 @@ class EqualizerAudioProcessor : AudioProcessor {
         }
         highPassFilter?.configureHighPass(20f, sampleRate, 0.707f)
         highPassFilter?.reset()
+        effects.configure(sampleRate)
         // Reallocate buffers for new sample rate if needed
         filterOutput = FloatArray(0)
         limiterOutput = FloatArray(0)
@@ -153,7 +182,9 @@ class EqualizerAudioProcessor : AudioProcessor {
 
     override fun queueInput(inputBuffer: ByteBuffer) {
         try {
-            val remaining = inputBuffer.remaining() / channelCount
+            // Contagem em SAMPLES (bytes/2), nao frames — preserva o interleave
+            // real L,R do buffer e garante saida 1:1 sem colapso de canais.
+            val remaining = inputBuffer.remaining() / 2
             if (remaining == 0) return
 
             // Bypass mode: passthrough audio unmodified
@@ -198,25 +229,49 @@ class EqualizerAudioProcessor : AudioProcessor {
                 }
             }
 
+            // Step 3.5: Efeitos de motor frame-aware (bass/wide/reverb), estereo real
+            val stereo = channelCount >= 2
+            if (effects.isActive) {
+                val frames = if (stereo) maxNeeded / 2 else maxNeeded
+                var i = 0
+                for (f in 0 until frames) {
+                    val l = filterOutput[i]
+                    val r = if (stereo) filterOutput[i + 1] else l
+                    val fx = effects.processFrame(l, r, channelCount)
+                    filterOutput[i] = fx.first
+                    if (stereo) filterOutput[i + 1] = fx.second
+                    i += if (stereo) 2 else 1
+                }
+            }
+
             // Step 4: Peak limiter (with lookahead, envelope follower, makeup gain)
             peakLimiter?.process(filterOutput, limiterOutput, 0, maxNeeded) ?: run {
                 System.arraycopy(filterOutput, 0, limiterOutput, 0, maxNeeded)
             }
 
-            // Step 5: Soft clipper (tanh - transparent, musical)
+            // Step 5: Soft-clip APENAS acima do limiar (material limpo sai limpo;
+            // tanh sempre-on distorcia mesmo com ganhos baixos)
             for (i in 0 until maxNeeded) {
                 var sample = limiterOutput[i]
-                sample = tanh(sample.toDouble()).toFloat()
-                // Step 6: TPDF dither (1-bit) before quantization
-                val dither = (random.nextDouble() - random.nextDouble()) * 2.0 / 32768.0
-                sample += dither.toFloat()
+                val a = kotlin.math.abs(sample)
+                if (a > SOFT_CLIP_THRESHOLD) {
+                    val over = (a - SOFT_CLIP_THRESHOLD) / (1f - SOFT_CLIP_THRESHOLD)
+                    sample = kotlin.math.sign(sample) *
+                        (SOFT_CLIP_THRESHOLD + tanh(over.toDouble()).toFloat() * (1f - SOFT_CLIP_THRESHOLD))
+                }
+                // Step 6: TPDF dither via LCG inline (sem lock de java.util.Random)
+                ditherState = ditherState * 1664525 + 1013904223
+                val r1 = (ditherState and 0xFFFF).toFloat() / 65536f
+                ditherState = ditherState * 1664525 + 1013904223
+                val r2 = (ditherState and 0xFFFF).toFloat() / 65536f
+                sample += (r1 + r2 - 1f) / 32768f
                 filterOutput[i] = sample.coerceIn(-1.0f, 1.0f)
             }
 
-            // Convert back to int16 (handle mono/stereo)
+            // Convert back to int16, 1:1 com a entrada (estereo preservado)
             inputBuffer.position(inputBuffer.limit())
 
-            val outBytes = maxNeeded * channelCount * 2
+            val outBytes = maxNeeded * 2
             if (cachedOutBuf.capacity() < outBytes) {
                 cachedOutBuf = ByteBuffer.allocate(outBytes).order(ByteOrder.nativeOrder())
             }
@@ -224,13 +279,7 @@ class EqualizerAudioProcessor : AudioProcessor {
             cachedOutBuf.limit(outBytes)
             val outShorts = cachedOutBuf.asShortBuffer()
             for (i in 0 until maxNeeded) {
-                val s = (filterOutput[i] * 32767f).toInt().toShort()
-                if (channelCount == 1) {
-                    outShorts.put(s)
-                } else {
-                    outShorts.put(s)
-                    outShorts.put(s) // Duplicate for stereo
-                }
+                outShorts.put((filterOutput[i] * 32767f).toInt().toShort())
             }
             cachedOutBuf.flip()
             outputBuffer = cachedOutBuf
@@ -260,6 +309,7 @@ class EqualizerAudioProcessor : AudioProcessor {
         for (f in filters) f.reset()
         peakLimiter?.reset()
         highPassFilter?.reset()
+        effects.reset()
     }
 
     override fun reset() {

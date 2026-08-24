@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
@@ -19,6 +20,11 @@ import com.mp3player.data.model.EqualizerBand
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.random.Random
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 enum class RepeatMode { NONE, ONE, ALL }
 enum class ShuffleMode { OFF, ON }
@@ -83,6 +89,13 @@ class MusicPlayer(private val context: Context) : EqController {
 
     var repeatMode: RepeatMode = RepeatMode.ALL
     var shuffleMode: ShuffleMode = ShuffleMode.OFF
+
+    /** Duracao do fade-out automatico no fim de cada faixa. 0 = desligado. */
+    var transitionFadeMs: Long = 0L
+
+    private var playbackSpeedField: Float = 1f
+    private var preservePitch = true
+    private var fadeJob: Job? = null
 
     private var songList: List<Song> = emptyList()
     private var shuffledIndices: MutableList<Int> = mutableListOf()
@@ -153,6 +166,7 @@ class MusicPlayer(private val context: Context) : EqController {
                         Player.STATE_READY -> {
                             isPrepared = true
                             currentSong?.let { song -> songChangedListeners.forEach { listener -> listener(song) } }
+                            scheduleTransitionFade()
                             onPreparedCallback?.invoke()
                             onPreparedCallback = null
                         }
@@ -310,7 +324,13 @@ class MusicPlayer(private val context: Context) : EqController {
         exoPlayer?.let { player ->
             player.stop()
             player.clearMediaItems()
+            player.volume = 1f
             player.setMediaItem(mediaItem)
+            // PlaybackParameters persiste entre itens; reafirma apos stop
+            player.playbackParameters = PlaybackParameters(
+                getPlaybackSpeed(),
+                if (preservePitch) 1f else getPlaybackSpeed()
+            )
             player.prepare()
             player.play()
         }
@@ -331,13 +351,79 @@ class MusicPlayer(private val context: Context) : EqController {
     fun pause() {
         exoPlayer?.let {
             if (it.playWhenReady) {
+                cancelScheduledFade()
                 it.pause()
+                it.volume = 1f
             }
         }
     }
 
     fun seekTo(position: Int) {
+        cancelScheduledFade()
         exoPlayer?.seekTo(position.toLong())
+    }
+
+    /** Velocidade 0.25x..3x com opcao de preservar o tom (pitch). */
+    fun setPlaybackSpeed(speed: Float, pitchPreserved: Boolean = true) {
+        playbackSpeedField = speed.coerceIn(0.25f, 3f)
+        preservePitch = pitchPreserved
+        exoPlayer?.playbackParameters = PlaybackParameters(
+            playbackSpeedField,
+            if (preservePitch) 1f else playbackSpeedField
+        )
+    }
+
+    fun getPlaybackSpeed(): Float = playbackSpeedField
+
+    fun isPitchPreserved(): Boolean = preservePitch
+
+    fun setEqEffects(bass: Float? = null, width: Float? = null, reverb: Float? = null) {
+        ensureEqualizerInitialized()
+        val p = equalizerProcessor ?: return
+        if (bass != null) p.setBassBoost(bass)
+        if (width != null) p.setStereoWidth(width)
+        if (reverb != null) p.setReverbMix(reverb)
+    }
+
+    fun getEqBass(): Float {
+        ensureEqualizerInitialized()
+        return equalizerProcessor?.getBassBoost() ?: 0f
+    }
+
+    fun getEqWidth(): Float {
+        ensureEqualizerInitialized()
+        return equalizerProcessor?.getStereoWidth() ?: 0f
+    }
+
+    fun getEqReverb(): Float {
+        ensureEqualizerInitialized()
+        return equalizerProcessor?.getReverbMix() ?: 0f
+    }
+
+    private fun cancelScheduledFade() {
+        fadeJob?.cancel()
+        fadeJob = null
+    }
+
+    /** Agenda o fade-out automatico pouco antes do fim da faixa atual. */
+    private fun scheduleTransitionFade() {
+        cancelScheduledFade()
+        val player = exoPlayer ?: return
+        if (transitionFadeMs <= 0 || repeatMode == RepeatMode.ONE) return
+        val duration = player.duration
+        if (duration <= 0) return
+        val startAt = (duration - transitionFadeMs).coerceAtLeast(0L)
+        fadeJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(startAt)
+            val p = exoPlayer ?: return@launch
+            if (!p.isPlaying) return@launch
+            val steps = 40
+            for (s in 1..steps) {
+                if (!p.isPlaying) break
+                p.volume = 1f - s.toFloat() / steps
+                delay(transitionFadeMs / steps)
+            }
+        }
     }
 
     fun getCurrentPosition(): Int = exoPlayer?.currentPosition?.toInt() ?: 0
@@ -382,6 +468,7 @@ class MusicPlayer(private val context: Context) : EqController {
     }
 
     fun release() {
+        cancelScheduledFade()
         abandonAudioFocus()
         exoPlayer?.release()
         exoPlayer = null

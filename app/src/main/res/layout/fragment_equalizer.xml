@@ -126,6 +126,16 @@
             android:paddingVertical="8dp" />
     </HorizontalScrollView>
 
+    <!-- Efeitos do motor: Bass / Wide / Reverb / Fade -->
+    <LinearLayout
+        android:id="@+id/effects_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="4dp"
+        android:visibility="gone" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

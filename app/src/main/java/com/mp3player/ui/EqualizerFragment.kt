@@ -60,6 +60,13 @@ class EqualizerFragment : DialogFragment() {
     private lateinit var preampSeek: SeekBar
     private lateinit var eqToggle: Button
     private lateinit var limiterIndicator: TextView
+    private lateinit var effectsContainer: LinearLayout
+
+    // Efeitos do motor (bass/wide/reverb) e fade de transicao
+    private var currentBass = 0f
+    private var currentWidth = 0f
+    private var currentReverb = 0f
+    private var currentFadeMs = 0L
     private val limiterHandler = Handler(Looper.getMainLooper())
     private var restoringEqState = false
     private var isInitialized = false
@@ -114,6 +121,7 @@ class EqualizerFragment : DialogFragment() {
         preampSeek = v.findViewById(R.id.seek_preamp)
         eqToggle = v.findViewById(R.id.btn_eq_toggle)
         limiterIndicator = v.findViewById(R.id.tv_limiter)
+        effectsContainer = v.findViewById(R.id.effects_container)
 
         presetManager = EqPresetManager(requireContext())
         audioManager = requireContext().getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -195,6 +203,17 @@ class EqualizerFragment : DialogFragment() {
             it.setEnabled(state.enabled)
         }
 
+        // Efeitos do motor; 0/ausente em JSON antigo = neutro
+        currentBass = state.bassBoost
+        currentWidth = state.stereoWidth
+        currentReverb = state.reverbMix
+        currentFadeMs = state.transitionFadeMs
+        mp?.setEqEffects(currentBass, currentWidth, currentReverb)
+        if (currentFadeMs > 0) mp?.transitionFadeMs = currentFadeMs
+        if (state.playbackSpeed > 0f && state.playbackSpeed != 1f) {
+            mp?.setPlaybackSpeed(state.playbackSpeed)
+        }
+
         eqToggle.isSelected = state.enabled
         eqToggle.text = if (state.enabled) "EQ ON" else "EQ OFF"
         eqToggle.setBackgroundResource(if (state.enabled) R.drawable.bg_preset_active else R.drawable.bg_preset_btn)
@@ -205,8 +224,135 @@ class EqualizerFragment : DialogFragment() {
 
         updatePresetNameDisplay(currentPresetName)
         rebuildBands()
+        buildEffectsRows()
         updateCurveView()
         restoringEqState = false
+    }
+
+    /** Seção Efeitos do motor: bass boost, wide, reverb e fade de transição. */
+    private fun buildEffectsRows() {
+        if (!::effectsContainer.isInitialized) return
+        effectsContainer.removeAllViews()
+        effectsContainer.visibility = View.VISIBLE
+
+        val header = TextView(requireContext())
+        header.text = "EFEITOS DO MOTOR"
+        header.setTextColor(requireContext().resolveThemeColor(R.attr.themeTextSecondary))
+        header.textSize = 11f
+        header.typeface = android.graphics.Typeface.DEFAULT_BOLD
+        header.setPadding(0, 8, 0, 2)
+        effectsContainer.addView(header)
+
+        addEffectRow("Bass", currentBass) { v ->
+            currentBass = v
+            musicPlayer?.setEqEffects(bass = v)
+            debounceSave()
+        }
+        addEffectRow("Wide", currentWidth) { v ->
+            currentWidth = v
+            musicPlayer?.setEqEffects(width = v)
+            debounceSave()
+        }
+        addEffectRow("Reverb", currentReverb) { v ->
+            currentReverb = v
+            musicPlayer?.setEqEffects(reverb = v)
+            debounceSave()
+        }
+        addFadeRow()
+    }
+
+    private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
+
+    private fun effectLabel(text: String): TextView {
+        val label = TextView(requireContext())
+        label.text = text
+        label.setTextColor(requireContext().resolveThemeColor(R.attr.themeTextSecondary))
+        label.textSize = 12f
+        label.typeface = android.graphics.Typeface.DEFAULT_BOLD
+        return label
+    }
+
+    private fun addEffectRow(labelText: String, initial: Float, onValue: (Float) -> Unit) {
+        val row = LinearLayout(requireContext())
+        row.orientation = LinearLayout.HORIZONTAL
+        row.gravity = Gravity.CENTER_VERTICAL
+        row.setPadding(0, dp(2), 0, dp(2))
+
+        val label = effectLabel(labelText)
+        label.layoutParams = LinearLayout.LayoutParams(dp(64), LinearLayout.LayoutParams.WRAP_CONTENT)
+        row.addView(label)
+
+        val seek = SeekBar(requireContext(), null, android.R.attr.seekBarStyle)
+        seek.max = 100
+        seek.progress = (initial * 100).toInt().coerceIn(0, 100)
+        seek.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        try { seek.progressDrawable = resources.getDrawable(R.drawable.seekbar_h_track, null) } catch (_: Exception) {}
+        try { seek.thumb = resources.getDrawable(R.drawable.seekbar_h_thumb, null) } catch (_: Exception) {}
+        row.addView(seek)
+
+        val valueText = TextView(requireContext())
+        valueText.text = "${seek.progress}%"
+        valueText.setTextColor(if (seek.progress > 0) 0xFF00E676.toInt() else 0xFFB0B0B0.toInt())
+        valueText.textSize = 11f
+        valueText.typeface = android.graphics.Typeface.DEFAULT_BOLD
+        valueText.layoutParams = LinearLayout.LayoutParams(dp(44), LinearLayout.LayoutParams.WRAP_CONTENT)
+        row.addView(valueText)
+
+        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (!fromUser) return
+                valueText.text = "$progress%"
+                valueText.setTextColor(if (progress > 0) 0xFF00E676.toInt() else 0xFFB0B0B0.toInt())
+                onValue(progress / 100f)
+            }
+            override fun onStartTrackingTouch(sb: SeekBar?) {}
+            override fun onStopTrackingTouch(sb: SeekBar?) {}
+        })
+
+        effectsContainer.addView(row)
+    }
+
+    private fun addFadeRow() {
+        val row = LinearLayout(requireContext())
+        row.orientation = LinearLayout.HORIZONTAL
+        row.gravity = Gravity.CENTER_VERTICAL
+        row.setPadding(0, dp(2), 0, dp(2))
+
+        val label = effectLabel("Fade")
+        label.layoutParams = LinearLayout.LayoutParams(dp(64), LinearLayout.LayoutParams.WRAP_CONTENT)
+        row.addView(label)
+
+        val seek = SeekBar(requireContext(), null, android.R.attr.seekBarStyle)
+        seek.max = 20
+        seek.progress = (currentFadeMs / 250L).toInt().coerceIn(0, 20)
+        seek.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        try { seek.progressDrawable = resources.getDrawable(R.drawable.seekbar_h_track, null) } catch (_: Exception) {}
+        try { seek.thumb = resources.getDrawable(R.drawable.seekbar_h_thumb, null) } catch (_: Exception) {}
+        row.addView(seek)
+
+        val valueText = TextView(requireContext())
+        fun fmtFade(ms: Long) = if (ms <= 0L) "off" else "${ms / 1000.0}s"
+        valueText.text = fmtFade(currentFadeMs)
+        valueText.setTextColor(if (currentFadeMs > 0L) 0xFF00E676.toInt() else 0xFFB0B0B0.toInt())
+        valueText.textSize = 11f
+        valueText.typeface = android.graphics.Typeface.DEFAULT_BOLD
+        valueText.layoutParams = LinearLayout.LayoutParams(dp(44), LinearLayout.LayoutParams.WRAP_CONTENT)
+        row.addView(valueText)
+
+        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (!fromUser) return
+                currentFadeMs = progress * 250L
+                musicPlayer?.transitionFadeMs = currentFadeMs
+                valueText.text = fmtFade(currentFadeMs)
+                valueText.setTextColor(if (currentFadeMs > 0L) 0xFF00E676.toInt() else 0xFFB0B0B0.toInt())
+                debounceSave()
+            }
+            override fun onStartTrackingTouch(sb: SeekBar?) {}
+            override fun onStopTrackingTouch(sb: SeekBar?) {}
+        })
+
+        effectsContainer.addView(row)
     }
 
     private fun rebuildBands() {
@@ -446,7 +592,12 @@ class EqualizerFragment : DialogFragment() {
             presetName = currentPresetName,
             enabled = eqToggle.isSelected,
             deviceType = deviceType,
-            deviceId = deviceId
+            deviceId = deviceId,
+            bassBoost = currentBass,
+            stereoWidth = currentWidth,
+            reverbMix = currentReverb,
+            transitionFadeMs = currentFadeMs,
+            playbackSpeed = mp?.getPlaybackSpeed() ?: 1f
         )
         EqStateRepository.save(requireContext(), state)
     }

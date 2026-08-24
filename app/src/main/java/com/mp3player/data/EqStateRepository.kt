@@ -19,7 +19,13 @@ data class EqState(
     val enabled: Boolean = true,
     val deviceType: Int = AudioDeviceInfo.TYPE_BUILTIN_SPEAKER,
     val deviceId: Int = 0,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    // Efeitos de motor e reproducao (ausentes em JSON antigo => 0 => neutro)
+    val bassBoost: Float = 0f,
+    val stereoWidth: Float = 0f,
+    val reverbMix: Float = 0f,
+    val transitionFadeMs: Long = 0L,
+    val playbackSpeed: Float = 1f
 )
 
 object EqStateRepository {
