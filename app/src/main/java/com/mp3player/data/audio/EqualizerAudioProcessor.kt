@@ -199,6 +199,7 @@ class EqualizerAudioProcessor : AudioProcessor {
 
             // Bypass mode: passthrough audio unmodified
             if (!isActiveState) {
+                android.util.Log.d("EqDbg", "BYPASS path rem=${inputBuffer.remaining()}")
                 val size = inputBuffer.remaining()
                 if (cachedOutBuf.capacity() < size) {
                     cachedOutBuf = ByteBuffer.allocate(size).order(inputBuffer.order())
@@ -293,8 +294,12 @@ class EqualizerAudioProcessor : AudioProcessor {
             }
             cachedOutBuf.flip()
             outputBuffer = cachedOutBuf
+            if (dbgCalls <= 5 || dbgCalls % 200 == 0L) {
+                android.util.Log.d("EqDbg", "ACTIVE done outRem=${outputBuffer.remaining()} esperado=$outBytes cap=${cachedOutBuf.capacity()}")
+            }
             inputEnded = false
         } catch (e: Exception) {
+            android.util.Log.w("EqDbg", "queueInput EXCECAO", e)
             Log.e("EqualizerAudioProcessor", "queueInput error", e)
             inputBuffer.position(inputBuffer.limit())
             inputEnded = false
