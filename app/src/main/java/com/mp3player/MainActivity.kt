@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity(), PlayerHost {
 
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var fragmentContainer: androidx.fragment.app.FragmentContainerView
+    private val appPrefs by lazy { getSharedPreferences("mp3player_prefs", 0) }
 
     private lateinit var btnPlayPause: ImageButton
     private lateinit var btnNext: ImageButton
@@ -336,6 +337,7 @@ class MainActivity : AppCompatActivity(), PlayerHost {
 
     private fun setupBottomNav() {
         bottomNav.setOnItemSelectedListener { item ->
+            appPrefs.edit().putInt("last_tab", item.itemId).apply()
             when (item.itemId) {
                 R.id.nav_songs -> {
                     etSearch.visibility = View.VISIBLE
@@ -370,7 +372,7 @@ class MainActivity : AppCompatActivity(), PlayerHost {
         val colors = intArrayOf(neonBlue, defaultColor)
         bottomNav.itemIconTintList = ColorStateList(states, colors)
         bottomNav.itemTextColor = ColorStateList(states, colors)
-        bottomNav.selectedItemId = R.id.nav_songs
+        bottomNav.selectedItemId = appPrefs.getInt("last_tab", R.id.nav_songs)
     }
 
     private fun switchFragment(f: Fragment) {
