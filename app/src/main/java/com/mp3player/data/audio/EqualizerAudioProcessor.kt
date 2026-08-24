@@ -292,7 +292,9 @@ class EqualizerAudioProcessor : AudioProcessor {
             for (i in 0 until maxNeeded) {
                 outShorts.put((filterOutput[i] * 32767f).toInt().toShort())
             }
-            cachedOutBuf.flip()
+            // Escrita via ShortBuffer-view nao move o position do ByteBuffer pai;
+            // reposiciona manualmente para leitura (limit ja = outBytes).
+            cachedOutBuf.position(0)
             outputBuffer = cachedOutBuf
             if (dbgCalls <= 5 || dbgCalls % 200 == 0L) {
                 android.util.Log.d("EqDbg", "ACTIVE done outRem=${outputBuffer.remaining()} esperado=$outBytes cap=${cachedOutBuf.capacity()}")
