@@ -359,19 +359,11 @@ class EqualizerFragment : DialogFragment() {
         // Recycle views instead of recreating
         val childCount = bandsContainer.childCount
         for (i in 0 until BAND_COUNT) {
-            val row: LinearLayout
             if (i < childCount) {
-                row = bandsContainer.getChildAt(i) as LinearLayout
+                updateBandRow(bandsContainer.getChildAt(i) as LinearLayout, i)
             } else {
-                row = LinearLayout(requireContext())
-                row.orientation = LinearLayout.VERTICAL
-                row.gravity = Gravity.CENTER_HORIZONTAL
-                val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
-                lp.setMargins(8, 4, 8, 4)
-                row.layoutParams = lp
-                bandsContainer.addView(row)
+                addBandRow(i)
             }
-            updateBandRow(row, i)
         }
         // Remove excess views
         while (bandsContainer.childCount > BAND_COUNT) {
