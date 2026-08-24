@@ -50,6 +50,10 @@ class EqualizerAudioProcessor : AudioProcessor {
     private var lastPreampGainDb = 0f
     private var ditherState = 0
 
+    private var dbgCalls = 0L
+    private var dbgBytesIn = 0L
+    private var dbgBytesOut = 0L
+
     init {
         for (i in 0 until bandCount) {
             filters[i].configure(freqs[i], 0f, sampleRate, EqualizerBand.DEFAULT_Q)
@@ -175,6 +179,7 @@ class EqualizerAudioProcessor : AudioProcessor {
         limiterOutput = FloatArray(0)
         workBuffer = FloatArray(0)
         updateActiveState()
+        android.util.Log.d("EqDbg", "configure sr=$sampleRate ch=$channelCount enc=${format.encoding} active=$isActiveState")
         return format
     }
 
@@ -186,6 +191,11 @@ class EqualizerAudioProcessor : AudioProcessor {
             // real L,R do buffer e garante saida 1:1 sem colapso de canais.
             val remaining = inputBuffer.remaining() / 2
             if (remaining == 0) return
+            dbgCalls++
+            dbgBytesIn += remaining * 2
+            if (dbgCalls <= 5 || dbgCalls % 200 == 0L) {
+                android.util.Log.d("EqDbg", "qIn#$dbgCalls bytesIn=$dbgBytesIn rem=${remaining * 2} active=$isActiveState out=$dbgBytesOut")
+            }
 
             // Bypass mode: passthrough audio unmodified
             if (!isActiveState) {
@@ -293,6 +303,10 @@ class EqualizerAudioProcessor : AudioProcessor {
 
     override fun getOutput(): ByteBuffer {
         val buf = outputBuffer
+        dbgBytesOut += buf.remaining()
+        if (dbgCalls <= 5 || dbgCalls % 200 == 0L) {
+            android.util.Log.d("EqDbg", "getOut bytesOut=$dbgBytesOut got=${buf.remaining()}")
+        }
         outputBuffer = ByteBuffer.allocate(0)
         return buf
     }

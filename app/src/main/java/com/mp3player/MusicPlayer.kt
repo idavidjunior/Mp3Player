@@ -162,6 +162,7 @@ class MusicPlayer(private val context: Context) : EqController {
                 }
 
                 override fun onPlaybackStateChanged(state: Int) {
+                    android.util.Log.d("Mp3Dbg", "state=$state playWhenReady=${exoPlayer?.playWhenReady}")
                     when (state) {
                         Player.STATE_READY -> {
                             isPrepared = true
@@ -187,6 +188,7 @@ class MusicPlayer(private val context: Context) : EqController {
 
                 override fun onPlayerError(error: PlaybackException) {
                     isPrepared = false
+                    android.util.Log.e("Mp3Dbg", "playerError", error)
                     error.printStackTrace()
                 }
             })
