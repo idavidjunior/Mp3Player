@@ -23,11 +23,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Restore debug keystore
-        env:
-          KEYSTORE_B64: ${{ secrets.ANDROID_DEBUG_KEYSTORE }}
         run: |
           mkdir -p ~/.android
-          echo "$KEYSTORE_B64" | base64 -d > ~/.android/debug.keystore
+          cp debug.keystore ~/.android/debug.keystore
 
       - name: Build debug APK
         run: |

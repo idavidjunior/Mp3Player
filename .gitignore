@@ -10,6 +10,7 @@ build/
 local.properties
 *.apk
 *.keystore
+!debug.keystore
 build_output/
 *.jks
 __pycache__/
