@@ -92,8 +92,4 @@ class PeakLimiter(private val sampleRate: Int,
         makeupGain = 1.0
         gainReductionDb = 0f
     }
-
-    fun reconfigure(sampleRate: Int, lookaheadMs: Float = 1f, thresholdDb: Float = -0.5f, attackMs: Float = 3f, releaseMs: Float = 150f) {
-        // For future use if needed
-    }
 }

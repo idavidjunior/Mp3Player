@@ -155,10 +155,15 @@ class SongAdapter(
     }
 
     private fun loadAlbumArtAsync(imageView: ImageView, path: String, context: android.content.Context) {
-        scope.launch {
+        (imageView.tag as? Job)?.cancel()
+        var job: Job? = null
+        job = scope.launch {
             val bmp = withContext(Dispatchers.IO) { AlbumArtProvider.getAlbumArt(path, context) }
-            if (bmp != null) imageView.setImageBitmap(bmp)
+            if (bmp != null && imageView.tag === job) {
+                imageView.setImageBitmap(bmp)
+            }
         }
+        imageView.tag = job
     }
 
     private fun bindExpanded(holder: ExpandedViewHolder, song: Song, position: Int) {

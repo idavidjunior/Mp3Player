@@ -157,7 +157,7 @@ object AudioDecoder {
             srcBuf = ShortBuffer.wrap(shorts)
         }
 
-        // Mix down to mono and resample to 44100
+        // Mix down to mono and resample to 11025
         val result: ShortArray
         if (channelCount == 1 && sampleRate == TARGET_SAMPLE_RATE) {
             result = ShortArray(srcBuf.remaining())
@@ -181,7 +181,7 @@ object AudioDecoder {
                 srcBuf.get(monoShorts)
             }
 
-            // Resample to 44100 if needed
+            // Resample to 11025 if needed
             if (sampleRate != TARGET_SAMPLE_RATE) {
                 val ratio = TARGET_SAMPLE_RATE.toDouble() / sampleRate
                 val newLen = (monoShorts.size * ratio).toInt()

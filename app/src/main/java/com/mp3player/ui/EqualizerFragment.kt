@@ -71,6 +71,8 @@ class EqualizerFragment : DialogFragment() {
     private var restoringEqState = false
     private var isInitialized = false
     private var initRunnable: Runnable? = null
+    private var initRetries = 0
+    private val saveStateRunnable = Runnable { saveState() }
     private val limiterRunnable = object : Runnable {
         override fun run() {
             updateLimiterDisplay()
@@ -99,6 +101,7 @@ class EqualizerFragment : DialogFragment() {
         super.onPause()
         limiterHandler.removeCallbacks(limiterRunnable)
         initRunnable?.let { limiterHandler.removeCallbacks(it) }
+        limiterHandler.removeCallbacks(saveStateRunnable)
         saveState()
     }
 
@@ -167,10 +170,16 @@ class EqualizerFragment : DialogFragment() {
         val mp = musicPlayer ?: (activity as? MainActivity)?.playerService?.musicPlayer
         musicPlayer = mp
         if (mp == null) {
-            initRunnable = Runnable { initializeEq() }
-            limiterHandler.postDelayed(initRunnable!!, 500)
+            if (initRetries < 10) {
+                initRetries++
+                initRunnable = Runnable { initializeEq() }
+                limiterHandler.postDelayed(initRunnable!!, 500)
+            } else {
+                android.util.Log.w("EqualizerFragment", "initializeEq: player indisponivel apos $initRetries tentativas")
+            }
             return
         }
+        initRetries = 0
 
         // Migrate from old format if needed
         val migrated = EqStateRepository.migrateFromOldFormat(requireContext(), audioManager!!)
@@ -476,6 +485,12 @@ class EqualizerFragment : DialogFragment() {
         eqToggle.setBackgroundResource(if (on) R.drawable.bg_preset_active else R.drawable.bg_preset_btn)
         eqToggle.setTextColor(if (on) 0xFF00BFFF.toInt() else 0xFFB0B0B0.toInt())
         musicPlayer?.setEnabled(on)
+        scheduleSaveState()
+    }
+
+    private fun scheduleSaveState() {
+        limiterHandler.removeCallbacks(saveStateRunnable)
+        limiterHandler.postDelayed(saveStateRunnable, 300)
     }
 
     private fun updateLimiterDisplay() {

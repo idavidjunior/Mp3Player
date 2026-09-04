@@ -44,12 +44,15 @@ class AlbumAdapter(
 
         val firstSong = a.songs.firstOrNull()
         if (firstSong != null) {
-            scope.launch {
+            (h.art.tag as? Job)?.cancel()
+            var job: Job? = null
+            job = scope.launch {
                 val bmp = withContext(Dispatchers.IO) {
                     AlbumArtProvider.getAlbumArt(firstSong.path, h.itemView.context)
                 }
-                if (bmp != null) h.art.setImageBitmap(bmp)
+                if (bmp != null && h.art.tag === job) h.art.setImageBitmap(bmp)
             }
+            h.art.tag = job
         }
 
         h.itemView.setOnClickListener { onItemClick(a) }

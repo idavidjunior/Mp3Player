@@ -82,7 +82,17 @@ class MusicRepository(private val context: Context) {
 
     suspend fun removeSongFromPlaylist(playlistId: Long, songPath: String) {
         playlistDao.removeSongFromPlaylist(playlistId, songPath)
+        reindexPositions(playlistId)
         playlistDao.updateSongCount(playlistId)
+    }
+
+    private suspend fun reindexPositions(playlistId: Long) {
+        val songs = playlistDao.getPlaylistSongsSync(playlistId)
+        songs.forEachIndexed { index, song ->
+            if (song.position != index) {
+                playlistDao.updateSongPosition(playlistId, song.songPath, index)
+            }
+        }
     }
 
     suspend fun clearPlaylist(playlistId: Long) {

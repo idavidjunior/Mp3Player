@@ -35,6 +35,7 @@ class NowPlayingFragment : Fragment() {
     private val playStateChangeListener: (Boolean) -> Unit = { playing ->
         activity?.runOnUiThread {
             btnPlayPause.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play_arrow)
+            updateVisualizer(playing)
         }
     }
 
@@ -57,6 +58,7 @@ class NowPlayingFragment : Fragment() {
     private lateinit var ivVolume: ImageView
     private lateinit var volumeSeekBar: SeekBar
     private lateinit var btnEqualizer: ImageButton
+    private lateinit var visualizerView: com.mp3player.VisualizerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_now_playing, container, false)
@@ -80,6 +82,7 @@ class NowPlayingFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         seekBar.removeCallbacks(seekBarRunnable)
+        if (::visualizerView.isInitialized) visualizerView.stopAnimating()
         musicPlayer?.removeSongChangedListener(songChangeListener)
         musicPlayer?.removePlayStateListener(playStateChangeListener)
     }
@@ -110,6 +113,7 @@ class NowPlayingFragment : Fragment() {
         ivVolume = v.findViewById(R.id.iv_volume_icon)
         volumeSeekBar = v.findViewById(R.id.volume_seekbar)
         btnEqualizer = v.findViewById(R.id.btn_equalizer)
+        visualizerView = v.findViewById(R.id.visualizer)
     }
 
     private fun setupControls() {
@@ -213,6 +217,7 @@ class NowPlayingFragment : Fragment() {
         }
         val playing = musicPlayer?.isPlaying == true
         btnPlayPause.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play_arrow)
+        updateVisualizer(playing)
 
         musicPlayer?.let { mp ->
             btnShuffle.setColorFilter(if (mp.shuffleMode == ShuffleMode.ON) 0xFF1DB954.toInt() else requireContext().resolveThemeColor(R.attr.themeTextSecondary))
@@ -226,6 +231,16 @@ class NowPlayingFragment : Fragment() {
             btnRepeat.setColorFilter(if (mp.repeatMode != RepeatMode.NONE) 0xFF1DB954.toInt() else requireContext().resolveThemeColor(R.attr.themeTextSecondary))
         }
         song?.let { updateFavoriteIcon(it.path) }
+    }
+
+    private fun updateVisualizer(playing: Boolean) {
+        if (!::visualizerView.isInitialized) return
+        if (playing) {
+            visualizerView.setAudioSessionId(musicPlayer?.audioSessionId ?: 0)
+            visualizerView.startAnimating()
+        } else {
+            visualizerView.stopAnimating()
+        }
     }
 
     private fun updateFavoriteIcon(songPath: String) {

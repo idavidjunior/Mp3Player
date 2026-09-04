@@ -1,6 +1,7 @@
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.io.File
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -8,15 +9,31 @@ plugins {
     id("kotlin-kapt")
 }
 
+fun loadVersionProps(): Properties {
+    val props = Properties()
+    val f = rootProject.file("version.properties")
+    if (f.exists()) {
+        f.inputStream().use { props.load(it) }
+    }
+    return props
+}
+
 fun getVersionCode(): Int {
-    val major = 1
-    val minor = 1
-    val patch = 0
+    val p = loadVersionProps()
+    val major = p.getProperty("VERSION_MAJOR", "1").toIntOrNull() ?: 1
+    val minor = p.getProperty("VERSION_MINOR", "0").toIntOrNull() ?: 0
+    val patch = p.getProperty("VERSION_PATCH", "0").toIntOrNull() ?: 0
     return major * 100000 + minor * 1000 + patch
 }
 
 fun getVersionName(): String {
-    return "1.1.0"
+    val p = loadVersionProps()
+    return p.getProperty("VERSION_NAME", "1.1.0").ifBlank {
+        val major = p.getProperty("VERSION_MAJOR", "1").toIntOrNull() ?: 1
+        val minor = p.getProperty("VERSION_MINOR", "0").toIntOrNull() ?: 0
+        val patch = p.getProperty("VERSION_PATCH", "0").toIntOrNull() ?: 0
+        "$major.$minor.$patch"
+    }
 }
 
 fun getBuildDate(): String {

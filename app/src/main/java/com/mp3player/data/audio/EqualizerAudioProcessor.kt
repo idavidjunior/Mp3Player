@@ -152,25 +152,14 @@ class EqualizerAudioProcessor : AudioProcessor {
         for (i in 0 until bandCount) {
             filters[i].configure(freqs[i], filters[i].gainDb, sampleRate, EqualizerBand.DEFAULT_Q)
         }
-        // Initialize limiter once, then reconfigure
-        if (peakLimiter == null) {
-            peakLimiter = PeakLimiter(
-                sampleRate = sampleRate,
-                lookaheadMs = 1f,
-                thresholdDb = -0.5f,
-                attackMs = 3f,   // Musical attack for bass
-                releaseMs = 150f // Musical release
-            )
-        } else {
-            // Reconfigure existing limiter with new sample rate
-            peakLimiter = PeakLimiter(
-                sampleRate = sampleRate,
-                lookaheadMs = 1f,
-                thresholdDb = -0.5f,
-                attackMs = 3f,
-                releaseMs = 150f
-            )
-        }
+        // Recreate limiter bound to the current sample rate (params sao fixos, a taxa muda)
+        peakLimiter = PeakLimiter(
+            sampleRate = sampleRate,
+            lookaheadMs = 1f,
+            thresholdDb = -0.5f,
+            attackMs = 3f,   // Musical attack for bass
+            releaseMs = 150f // Musical release
+        )
         highPassFilter?.configureHighPass(20f, sampleRate, 0.707f)
         highPassFilter?.reset()
         effects.configure(sampleRate)
